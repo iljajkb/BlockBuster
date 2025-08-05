@@ -1,0 +1,39 @@
+plugins {
+    id 'org.openjfx.javafxplugin' version '0.1.0'
+    id 'application'
+}
+
+group = 'org.example'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+application {
+    mainClass = 'game.app.Main'
+}
+
+dependencies {
+    // Nutze das Modul "javafx-controls", das enthält alles für Canvas & Stage
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+javafx {
+    version = "21.0.3"
+    modules = [ 'javafx.controls' ]
+}
+
+run {
+    doFirst {
+        jvmArgs = [
+                '--module-path', classpath.asPath,
+                '--add-modules', 'javafx.controls'
+        ]
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
