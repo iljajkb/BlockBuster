@@ -16,6 +16,7 @@ application {
 
 dependencies {
     // Nutze das Modul "javafx-controls", das enthält alles für Canvas & Stage
+    testImplementation 'org.assertj:assertj-core:3.25.0'
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
 }
