@@ -33,6 +33,7 @@ public class MyVector {
         return new MyVector(x, -y);
     }
 
+    // value-object
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof MyVector other)) {

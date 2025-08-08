@@ -6,9 +6,6 @@ public class Ball {
     private MyVector position;
     private MyVector velocity;
 
-    private static final int FRAME_WIDTH = 1200;
-    private static final int FRAME_HEIGHT = 900;
-
     private int damage = 50;
 
     public Ball(MyVector position, MyVector velocity) {
@@ -20,12 +17,21 @@ public class Ball {
         position =  position.add(velocity);
     }
 
+    public void reset(MyVector position, MyVector velocity) {
+        this.position = position;
+        this.velocity = velocity;
+    }
+
     public MyVector getPosition() {
         return position;
     }
 
     public MyVector getVelocity() {
         return velocity;
+    }
+
+    public void setVelocity(MyVector vel) {
+        this.velocity = vel;
     }
 
     public int getCurrentDamage() {
@@ -36,21 +42,7 @@ public class Ball {
         this.damage = damage;
     }
 
-    protected MyVector getSpeed() {
-        return velocity;
-    }
 
-    protected void setSpeed(MyVector vel) {
-        this.velocity = vel;
-    }
 
-    public void checkEdgeCollision() {
-        if (position.x <= 0 || position.x >= FRAME_WIDTH) {
-            velocity = velocity.flipX();
-        }
-        if (position.y <= 0 || position.y >= FRAME_HEIGHT) {
-            velocity = velocity.flipY();
-        }
-    }
 
 }

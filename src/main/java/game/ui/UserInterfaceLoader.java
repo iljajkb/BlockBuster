@@ -1,5 +1,6 @@
 package game.ui;
 
+import game.GameConfig;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -14,7 +15,7 @@ public class UserInterfaceLoader extends Application {
     public void start(Stage primaryStage) {
 
         Group root = new Group();
-        Scene scene = new Scene(root, 1200, 900, Color.GHOSTWHITE);
+        Scene scene = new Scene(root, GameConfig.FRAME_WIDTH, GameConfig.FRAME_HEIGHT, Color.DARKBLUE);
 
         // Icon
         URL url = getClass().getResource("/icon.png");
@@ -25,7 +26,7 @@ public class UserInterfaceLoader extends Application {
 
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
-        primaryStage.setTitle("Blockbuster");
+        primaryStage.setTitle("BlockBuster");
         primaryStage.show();
     }
 }
