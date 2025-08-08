@@ -1,7 +1,9 @@
 package game.entities;
 
+import game.core.entities.Player;
 import game.core.entities.ball.Ball;
 import game.core.entities.MyVector;
+import game.core.logic.CollisionHandler;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -28,7 +30,8 @@ public class BallTest {
         MyVector position = new MyVector(1200, 0);
         MyVector velocityVector = new MyVector(5, 5);
         Ball ball = new Ball(position, velocityVector);
-        ball.checkEdgeCollision();
+        Player player = new Player("name");
+        CollisionHandler.checkEdgeCollision(ball, player);
         assertThat(ball.getVelocity()).isEqualTo(new MyVector(-5, -5));
     }
 }

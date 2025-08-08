@@ -8,7 +8,7 @@ import game.core.entities.ball.Ball;
 
 public class CollisionHandler {
 
-    public void checkForPaddleCollision(Ball ball, Paddle paddle) {
+    public static void checkForPaddleCollision(Ball ball, Paddle paddle) {
         MyVector pos = ball.getPosition();
         MyVector vel = ball.getVelocity();
         if (pos.x >= paddle.getX() - ((double) GameConfig.PADDLE_WIDTH / 2) &&
@@ -17,7 +17,7 @@ public class CollisionHandler {
         }
     }
 
-    public void checkEdgeCollision(Ball ball, Player player) {
+    public static void checkEdgeCollision(Ball ball, Player player) {
         MyVector pos = ball.getPosition();
         MyVector vel = ball.getVelocity();
         if (pos.x <= 0 || pos.x >= GameConfig.FRAME_WIDTH) {
@@ -28,7 +28,7 @@ public class CollisionHandler {
         }
         if (pos.y >= GameConfig.FRAME_HEIGHT) {
             player.loseLife();
-            ball.reset(new Vec2D(600, 450), new Vec2D(2, -2));
+            ball.reset(new MyVector(600, 450), new MyVector(2, -2));
         }
         ball.setVelocity(vel);
     }

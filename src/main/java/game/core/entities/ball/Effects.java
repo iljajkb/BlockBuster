@@ -10,7 +10,7 @@ public enum Effects {
     SLOW_BALL {
         @Override
         public void apply(Ball ball) {
-            ball.setVelocity(ball.getSpeed().scale(0.5));
+            ball.setVelocity(ball.getVelocity().scale(0.5));
         }
     },
     NONE {
