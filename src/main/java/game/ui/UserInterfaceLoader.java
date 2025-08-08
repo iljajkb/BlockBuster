@@ -24,6 +24,7 @@ public class UserInterfaceLoader extends Application {
         primaryStage.getIcons().add(icon);
 
         primaryStage.setScene(scene);
+        primaryStage.setResizable(false);
         primaryStage.setTitle("Blockbuster");
         primaryStage.show();
     }
