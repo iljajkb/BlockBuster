@@ -1,6 +1,7 @@
 package game.ui;
 
 import game.GameConfig;
+import game.core.controller.GameController;
 import game.core.entities.MyVector;
 import game.core.entities.paddle.Paddle;
 import game.core.entities.Player;
@@ -21,9 +22,6 @@ import java.awt.*;
 import java.net.URL;
 
 public class UserInterfaceLoader extends Application {
-    private boolean paused = false;
-    private boolean gameStarted = false;
-    private boolean gameOver = false;
 
     @Override
     public void start(Stage primaryStage) {
@@ -47,76 +45,10 @@ public class UserInterfaceLoader extends Application {
         primaryStage.setTitle("BlockBuster");
         primaryStage.show();
 
-        // Entities
-        Ball ball = new Ball(new MyVector(100, 100), new MyVector(4, -4));
-        // Paddle-Mittelpunkt: x = Mitte, y = z. B. 40 px über dem Boden
-        Paddle paddle = new Paddle(GameConfig.FRAME_WIDTH / 2);
+        GameController gameController = new GameController(gc, canvas);
 
-        Player p1 = new Player("p1");
+        scene.setOnKeyPressed(gameController::handleKeyPress);
 
-        // Startbildschirm
-        gc.setFill(Color.WHITE);
-        gc.setFont(new Font(50));
-        drawCenteredText(gc, "Press SPACE to start the Game", GameConfig.FRAME_HEIGHT / 2.0, 40);
-
-        scene.setOnKeyPressed(e -> {
-            switch (e.getCode()) {
-                case SPACE, ENTER -> startGameLoop(gc, ball, paddle, canvas, p1);
-                case LEFT -> {
-                    if(!paused) { paddle.moveLeft();}
-                }
-                case RIGHT -> {
-                    if(!paused) { paddle.moveRight();}
-                }
-                case ESCAPE -> paused = !paused;
-            }
-        });
-    }
-    // Hilfsfunktion für zentrierten Text (GPT 5 Kreation)
-    private void drawCenteredText(GraphicsContext gc, String text, double y, double fontSize) {
-        gc.setFont(new Font(fontSize));
-        javafx.scene.text.Text helper = new javafx.scene.text.Text(text);
-        helper.setFont(gc.getFont());
-        double textWidth = helper.getLayoutBounds().getWidth();
-        double x = (GameConfig.FRAME_WIDTH - textWidth) / 2;
-        gc.fillText(text, x, y);
-    }
-
-
-    private void startGameLoop(GraphicsContext gc, Ball ball, Paddle paddle, Canvas canvas, Player p1) {
-        new AnimationTimer() {
-            @Override
-            public void handle(long now) {
-
-                gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-
-                // Pause
-                if (paused) {
-                    gc.setFill(Color.WHITE);
-                    drawCenteredText(gc, "PAUSED\nPRESS ESC TO CONTINUE", GameConfig.FRAME_HEIGHT / 2.0, 20);
-                    return;
-                }
-                // Game Over
-                if (p1.checkForGameOver()) {
-                    drawCenteredText(gc, "GAME OVER", GameConfig.FRAME_HEIGHT / 2.0, 30);
-                    ball.setVelocity(new MyVector(0, 0));
-                    return;
-                }
-
-                ball.move();
-                CollisionHandler.checkForPaddleCollision(ball, paddle);
-                // (Optional) Wände abprallen lassen:
-                CollisionHandler.checkEdgeCollision(ball, p1);
-
-                // Render
-                gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-
-                p1.renderLives(gc);
-                paddle.render(gc);
-                ball.render(gc);
-
-            }
-        }.start();
-
+        gameController.showStartScreen();
     }
 }
