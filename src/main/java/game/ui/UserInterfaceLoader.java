@@ -88,28 +88,33 @@ public class UserInterfaceLoader extends Application {
             @Override
             public void handle(long now) {
 
+                gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
+                // Pause
                 if (paused) {
                     gc.setFill(Color.WHITE);
-                    gc.setFont(Font.getDefault());
-
                     drawCenteredText(gc, "PAUSED\nPRESS ESC TO CONTINUE", GameConfig.FRAME_HEIGHT / 2.0, 20);
+                    return;
                 }
-                else {
-                    // Update
-                    ball.move();
-                    CollisionHandler.checkForPaddleCollision(ball, paddle);
-                    // (Optional) Wände abprallen lassen:
-                    CollisionHandler.checkEdgeCollision(ball, p1);
-
-                    // Render
-                    gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-
-                    p1.renderLives(gc);
-                    p1.checkForGameOver(gc);
-                    paddle.render(gc);
-                    ball.render(gc);
+                // Game Over
+                if (p1.checkForGameOver()) {
+                    drawCenteredText(gc, "GAME OVER", GameConfig.FRAME_HEIGHT / 2.0, 30);
+                    ball.setVelocity(new MyVector(0, 0));
+                    return;
                 }
+
+                ball.move();
+                CollisionHandler.checkForPaddleCollision(ball, paddle);
+                // (Optional) Wände abprallen lassen:
+                CollisionHandler.checkEdgeCollision(ball, p1);
+
+                // Render
+                gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+
+                p1.renderLives(gc);
+                paddle.render(gc);
+                ball.render(gc);
+
             }
         }.start();
 

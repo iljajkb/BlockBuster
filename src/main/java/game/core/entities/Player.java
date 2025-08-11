@@ -21,15 +21,13 @@ public class Player {
         return lives;
     }
 
-    public void checkForGameOver(GraphicsContext gc) {
-        if (lives <= 0) {
-            renderGameOver(gc);
-        }
+    public boolean checkForGameOver() {
+        return lives <= 0;
     }
 
-    private void renderGameOver(GraphicsContext gc) {
-        gc.fillText("GAME OVER", 50, 50);
-    }
+//    private void renderGameOver(GraphicsContext gc) {
+//        gc.fillText("GAME OVER", 50, 50);
+//    }
 
     public int getScore() {
         return score;
