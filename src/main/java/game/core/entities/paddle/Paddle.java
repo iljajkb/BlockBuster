@@ -24,11 +24,14 @@ public class Paddle {
     }
 
     public void moveLeft() {
-        xPos = xPos - movingSpeed;
+        if ((xPos - (paddleWidth / 2)) > 0) {
+            xPos = xPos - movingSpeed; // prevents going out of frame
+        }
     }
-
     public void moveRight() {
-        xPos = xPos + movingSpeed;
+        if ((xPos + (paddleWidth / 2)) < GameConfig.FRAME_WIDTH) {
+            xPos = xPos + movingSpeed;
+        }
     }
 
     public int getPaddleWidth() {
