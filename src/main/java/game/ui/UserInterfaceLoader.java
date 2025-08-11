@@ -22,6 +22,8 @@ import java.net.URL;
 
 public class UserInterfaceLoader extends Application {
     private boolean paused = false;
+    private boolean gameStarted = false;
+    private boolean gameOver = false;
 
     @Override
     public void start(Stage primaryStage) {
@@ -52,6 +54,11 @@ public class UserInterfaceLoader extends Application {
 
         Player p1 = new Player("p1");
 
+        // Startbildschirm
+        gc.setFill(Color.WHITE);
+        gc.setFont(new Font(50));
+        drawCenteredText(gc, "Press SPACE to start the Game", GameConfig.FRAME_HEIGHT / 2.0, 40);
+
         scene.setOnKeyPressed(e -> {
             switch (e.getCode()) {
                 case SPACE, ENTER -> startGameLoop(gc, ball, paddle, canvas, p1);
@@ -65,17 +72,28 @@ public class UserInterfaceLoader extends Application {
             }
         });
     }
+    // Hilfsfunktion für zentrierten Text (GPT 5 Kreation)
+    private void drawCenteredText(GraphicsContext gc, String text, double y, double fontSize) {
+        gc.setFont(new Font(fontSize));
+        javafx.scene.text.Text helper = new javafx.scene.text.Text(text);
+        helper.setFont(gc.getFont());
+        double textWidth = helper.getLayoutBounds().getWidth();
+        double x = (GameConfig.FRAME_WIDTH - textWidth) / 2;
+        gc.fillText(text, x, y);
+    }
 
 
     private void startGameLoop(GraphicsContext gc, Ball ball, Paddle paddle, Canvas canvas, Player p1) {
         new AnimationTimer() {
             @Override
             public void handle(long now) {
+
+
                 if (paused) {
                     gc.setFill(Color.WHITE);
                     gc.setFont(Font.getDefault());
-                    gc.fillText("PAUSED", GameConfig.FRAME_WIDTH / 2.0, GameConfig.FRAME_HEIGHT / 2.0);
-                    gc.fillText("Press ESC to continue", (GameConfig.FRAME_WIDTH / 2.0) - 40 , (GameConfig.FRAME_HEIGHT / 2.0) + 50);
+
+                    drawCenteredText(gc, "PAUSED\nPRESS ESC TO CONTINUE", GameConfig.FRAME_HEIGHT / 2.0, 20);
                 }
                 else {
                     // Update
@@ -87,11 +105,13 @@ public class UserInterfaceLoader extends Application {
                     // Render
                     gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
+                    p1.renderLives(gc);
                     p1.checkForGameOver(gc);
                     paddle.render(gc);
                     ball.render(gc);
                 }
             }
         }.start();
+
     }
 }
