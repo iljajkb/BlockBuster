@@ -14,11 +14,15 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
+import java.awt.*;
 import java.net.URL;
 
 public class UserInterfaceLoader extends Application {
+    private boolean paused = false;
+
     @Override
     public void start(Stage primaryStage) {
         Group root = new Group();
@@ -46,17 +50,20 @@ public class UserInterfaceLoader extends Application {
         // Paddle-Mittelpunkt: x = Mitte, y = z. B. 40 px über dem Boden
         Paddle paddle = new Paddle(GameConfig.FRAME_WIDTH / 2);
 
-        // Steuerung (einfach: schrittweise Bewegung bei KeyPress)
+        Player p1 = new Player("p1");
+
         scene.setOnKeyPressed(e -> {
             switch (e.getCode()) {
-                case LEFT -> paddle.moveLeft();
-                case RIGHT -> paddle.moveRight();
+                case SPACE, ENTER -> startGameLoop(gc, ball, paddle, canvas, p1);
+                case LEFT -> {
+                    if(!paused) { paddle.moveLeft();}
+                }
+                case RIGHT -> {
+                    if(!paused) { paddle.moveRight();}
+                }
+                case ESCAPE -> paused = !paused;
             }
         });
-
-        Player p1 = new Player("p1");
-        // Game Loop starten
-        startGameLoop(gc, ball, paddle, canvas, p1);
     }
 
 
@@ -64,19 +71,26 @@ public class UserInterfaceLoader extends Application {
         new AnimationTimer() {
             @Override
             public void handle(long now) {
+                if (paused) {
+                    gc.setFill(Color.WHITE);
+                    gc.setFont(Font.getDefault());
+                    gc.fillText("PAUSED", GameConfig.FRAME_WIDTH / 2.0, GameConfig.FRAME_HEIGHT / 2.0);
+                    gc.fillText("Press ESC to continue", (GameConfig.FRAME_WIDTH / 2.0) - 40 , (GameConfig.FRAME_HEIGHT / 2.0) + 50);
+                }
+                else {
+                    // Update
+                    ball.move();
+                    CollisionHandler.checkForPaddleCollision(ball, paddle);
+                    // (Optional) Wände abprallen lassen:
+                    CollisionHandler.checkEdgeCollision(ball, p1);
 
-                // Update
-                ball.move();
-                CollisionHandler.checkForPaddleCollision(ball, paddle);
-                // (Optional) Wände abprallen lassen:
-                CollisionHandler.checkEdgeCollision(ball, p1);
+                    // Render
+                    gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
-                // Render
-                gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-
-                p1.checkForGameOver(gc);
-                paddle.render(gc);
-                ball.render(gc);
+                    p1.checkForGameOver(gc);
+                    paddle.render(gc);
+                    ball.render(gc);
+                }
             }
         }.start();
     }
