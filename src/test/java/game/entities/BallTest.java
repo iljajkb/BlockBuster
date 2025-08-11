@@ -1,5 +1,7 @@
 package game.entities;
 
+import game.GameConfig;
+import game.core.entities.Paddle;
 import game.core.entities.Player;
 import game.core.entities.ball.Ball;
 import game.core.entities.MyVector;
@@ -33,5 +35,34 @@ public class BallTest {
         Player player = new Player("name");
         CollisionHandler.checkEdgeCollision(ball, player);
         assertThat(ball.getVelocity()).isEqualTo(new MyVector(-5, -5));
+    }
+
+    @Test
+    @DisplayName("Check for Collision ball with paddle with exact xPos")
+    void checkPaddleCollision() {
+        // Arrange
+        Paddle paddle = new Paddle(50);
+        MyVector position = new MyVector(50, paddle.getY());
+        MyVector velocityVector = new MyVector(1, -5);
+        Ball ball = new Ball(position, velocityVector);
+        // Act
+        CollisionHandler.checkForPaddleCollision(ball, paddle);
+        // Assert
+        assertThat(ball.getVelocity()).isEqualTo(new MyVector(1, 5));
+    }
+
+    @Test
+    @DisplayName("Check for PLayer losing one life when Ball hitting bottom and reset")
+    void checkForLifeLoss1() {
+        // Arrange
+        Player p1 = new Player("p1");
+        MyVector position = new MyVector(0, GameConfig.FRAME_HEIGHT);
+        MyVector velocityVector = new MyVector(0, 0);
+        Ball ball = new Ball(position, velocityVector);
+        // Act
+        CollisionHandler.checkEdgeCollision(ball, p1);
+        // Assert
+        assertThat(p1.getLives()).isEqualTo(2);
+        assertThat(ball.getPosition()).isEqualTo(new MyVector(600, 450)); // ball reset
     }
 }

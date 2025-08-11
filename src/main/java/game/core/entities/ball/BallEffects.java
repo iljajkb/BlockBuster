@@ -1,6 +1,6 @@
 package game.core.entities.ball;
 
-public enum Effects {
+public enum BallEffects {
     HIGH_DAMAGE {
         @Override
         public void apply(Ball ball) {

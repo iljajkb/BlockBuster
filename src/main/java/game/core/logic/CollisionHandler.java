@@ -11,10 +11,16 @@ public class CollisionHandler {
     public static void checkForPaddleCollision(Ball ball, Paddle paddle) {
         MyVector pos = ball.getPosition();
         MyVector vel = ball.getVelocity();
-        if (pos.x >= paddle.getX() - ((double) GameConfig.PADDLE_WIDTH / 2) &&
-                pos.x <= paddle.getX() + ((double) GameConfig.PADDLE_WIDTH / 2)) {
+
+        boolean withinX = pos.x >= paddle.getX() - (double) GameConfig.PADDLE_WIDTH / 2 &&
+                pos.x <= paddle.getX() + (double) GameConfig.PADDLE_WIDTH / 2;
+        boolean withinY = pos.y + GameConfig.BALL_RADIUS >= paddle.getY() &&
+                pos.y - GameConfig.BALL_RADIUS <= paddle.getY() + GameConfig.PADDLE_HEIGHT;
+
+        if (withinX && withinY) {
             vel = vel.flipY();
         }
+        ball.setVelocity(vel);
     }
 
     public static void checkEdgeCollision(Ball ball, Player player) {

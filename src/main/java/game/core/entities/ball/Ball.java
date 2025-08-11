@@ -1,6 +1,9 @@
 package game.core.entities.ball;
 
+import game.GameConfig;
 import game.core.entities.MyVector;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 public class Ball {
     private MyVector position;
@@ -43,6 +46,8 @@ public class Ball {
     }
 
 
-
-
+    public void render(GraphicsContext gc) {
+        gc.setFill(Color.WHITE);
+        gc.fillOval(position.x, position.y, GameConfig.BALL_RADIUS * 2, GameConfig.BALL_RADIUS * 2);
+    }
 }
