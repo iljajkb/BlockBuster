@@ -13,6 +13,12 @@ public enum BallEffects {
             ball.setVelocity(ball.getVelocity().scale(0.5));
         }
     },
+    FAST_BALL {
+        @Override
+        public void apply(Ball ball) {
+            ball.setVelocity(ball.getVelocity().scale(2));
+        }
+    },
     NONE {
         @Override
         public void apply(Ball ball) {

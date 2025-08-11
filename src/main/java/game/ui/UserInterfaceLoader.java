@@ -54,23 +54,27 @@ public class UserInterfaceLoader extends Application {
             }
         });
 
+        Player p1 = new Player("p1");
         // Game Loop starten
-        startGameLoop(gc, ball, paddle, canvas);
+        startGameLoop(gc, ball, paddle, canvas, p1);
     }
 
 
-    private void startGameLoop(GraphicsContext gc, Ball ball, Paddle paddle, Canvas canvas) {
+    private void startGameLoop(GraphicsContext gc, Ball ball, Paddle paddle, Canvas canvas, Player p1) {
         new AnimationTimer() {
             @Override
             public void handle(long now) {
+
                 // Update
                 ball.move();
                 CollisionHandler.checkForPaddleCollision(ball, paddle);
                 // (Optional) Wände abprallen lassen:
-                CollisionHandler.checkEdgeCollision(ball, new Player("p1"));
+                CollisionHandler.checkEdgeCollision(ball, p1);
 
                 // Render
                 gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+
+                p1.checkForGameOver(gc);
                 paddle.render(gc);
                 ball.render(gc);
             }
