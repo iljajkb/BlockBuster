@@ -47,7 +47,7 @@ public class Ball {
 
 
     public void render(GraphicsContext gc) {
-        gc.setFill(Color.WHITE);
+        gc.setFill(GameConfig.COLOR_1);
         gc.fillOval(position.x, position.y, GameConfig.BALL_RADIUS * 2, GameConfig.BALL_RADIUS * 2);
     }
 }

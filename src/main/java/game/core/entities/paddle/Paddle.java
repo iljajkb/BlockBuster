@@ -1,4 +1,4 @@
-package game.core.entities;
+package game.core.entities.paddle;
 
 import game.GameConfig;
 import javafx.scene.canvas.GraphicsContext;
@@ -7,8 +7,9 @@ import javafx.scene.paint.Color;
 public class Paddle {
     private final static int Y_POS = GameConfig.FRAME_HEIGHT - 10;
     private int xPos;
+    private int paddleWidth = 100;
 
-    private int movingSpeed = 17;
+    private int movingSpeed = 20;
 
     public Paddle(int xPos) {
         this.xPos = xPos;
@@ -30,15 +31,23 @@ public class Paddle {
         xPos = xPos + movingSpeed;
     }
 
-    public void updateMovingSpeed(double percentage) {
+    public int getPaddleWidth() {
+        return paddleWidth;
+    }
+
+    protected void updateMovingSpeed(double percentage) {
         movingSpeed = (int) (movingSpeed * percentage);
     }
 
+    protected void updatePaddleWidth(int newWidth) {
+        paddleWidth = newWidth;
+    }
+
     public void render(GraphicsContext gc) {
-        gc.setFill(Color.BLUE);
-        gc.fillRect(xPos - (double) GameConfig.PADDLE_WIDTH / 2,
+        gc.setFill(GameConfig.COLOR_1);
+        gc.fillRect(xPos - (double) paddleWidth / 2,
                 Y_POS,
-                GameConfig.PADDLE_WIDTH,
+                paddleWidth,
                 GameConfig.PADDLE_HEIGHT);
     }
 }

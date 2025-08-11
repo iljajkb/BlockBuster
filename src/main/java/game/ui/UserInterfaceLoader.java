@@ -2,7 +2,7 @@ package game.ui;
 
 import game.GameConfig;
 import game.core.entities.MyVector;
-import game.core.entities.Paddle;
+import game.core.entities.paddle.Paddle;
 import game.core.entities.Player;
 import game.core.entities.ball.Ball;
 import game.core.logic.CollisionHandler;
@@ -22,7 +22,7 @@ public class UserInterfaceLoader extends Application {
     @Override
     public void start(Stage primaryStage) {
         Group root = new Group();
-        Scene scene = new Scene(root, GameConfig.FRAME_WIDTH, GameConfig.FRAME_HEIGHT, Color.DARKBLUE);
+        Scene scene = new Scene(root, GameConfig.FRAME_WIDTH, GameConfig.FRAME_HEIGHT, GameConfig.BACKGROUND_COLOR);
 
         // Canvas + GC
         Canvas canvas = new Canvas(GameConfig.FRAME_WIDTH, GameConfig.FRAME_HEIGHT);

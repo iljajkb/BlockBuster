@@ -1,7 +1,7 @@
 package game.entities;
 
 import game.GameConfig;
-import game.core.entities.Paddle;
+import game.core.entities.paddle.Paddle;
 import game.core.entities.Player;
 import game.core.entities.ball.Ball;
 import game.core.entities.MyVector;
