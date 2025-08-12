@@ -52,11 +52,11 @@ public class CollisionHandler {
         return ballWithinBlockX && ballWithinBlockY;
     }
 
-    public static void checkBlockCollision(Ball ball, Block[][] blocks) {
+    public static void checkBlockCollision(Ball ball, Block[][] blocks, Player player) {
         for (Block[] row : blocks) {
             for (Block block : row) {
                 if (!block.isDestroyed() && isColliding(ball, block)) {
-                    block.hit(ball, ball.getCurrentEffect());
+                    block.hit(ball, player);
 
                     MyVector ballPos = ball.getPosition();
                     MyVector blockPos = block.getPosition();

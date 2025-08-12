@@ -6,7 +6,9 @@ import game.core.entities.ball.BallEffects;
 import javafx.scene.canvas.GraphicsContext;
 
 public interface Block {
-    void hit(Ball ball, BallEffects effect);
+
+
+    void hit(Ball ball, Player player);
     boolean isDestroyed();
     void render(GraphicsContext gc);
     MyVector getPosition();

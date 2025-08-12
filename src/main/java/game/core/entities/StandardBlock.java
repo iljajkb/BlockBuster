@@ -2,18 +2,18 @@ package game.core.entities;
 
 import game.GameConfig;
 import game.core.entities.ball.Ball;
-import game.core.entities.ball.BallEffects;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
 
 public class StandardBlock implements Block {
     private int hp = 50;
     private MyVector pos;
 
     @Override
-    public void hit(Ball ball, BallEffects effect) {
+    public void hit(Ball ball, Player player) {
         // clamp to 0 so we don't go negative
         hp = Math.max(0, hp - ball.getCurrentDamage());
+        player.increaseScore(ball.getCurrentDamage());
+        // hp = hp - ball.getCurrentDamage();
     }
 
     @Override
@@ -24,17 +24,12 @@ public class StandardBlock implements Block {
 
     @Override
     public void render(GraphicsContext gc) {
-        // draw at the block's position using configured size
-        double x = pos != null ? pos.x : 0.0;
-        double y = pos != null ? pos.y : 0.0;
+        if (!isDestroyed()) {
+            gc.setFill(GameConfig.COLOR_1);
+            gc.fillRect(pos.x, pos.y, GameConfig.BLOCK_WIDTH, GameConfig.BLOCK_HEIGHT);
 
-        gc.setFill(GameConfig.COLOR_1);
-        gc.fillRect(x, y, GameConfig.BLOCK_WIDTH, GameConfig.BLOCK_HEIGHT);
-
-        gc.setStroke(Color.BLACK);
-        gc.strokeRect(x, y, GameConfig.BLOCK_WIDTH, GameConfig.BLOCK_HEIGHT);
-        if (isDestroyed()) {
-            renderDestroyed(gc);
+//            gc.setStroke(Color.BLACK);
+//            gc.strokeRect(pos.x, pos.y, GameConfig.BLOCK_WIDTH, GameConfig.BLOCK_HEIGHT);
         }
     }
 
@@ -44,7 +39,4 @@ public class StandardBlock implements Block {
     @Override
     public void setPosition(MyVector pos) { this.pos = pos; }
 
-    public void renderDestroyed(GraphicsContext gc) {
-        gc.clearRect(this.pos.x, this.pos.y, GameConfig.BLOCK_WIDTH, GameConfig.BLOCK_HEIGHT);
-    }
 }

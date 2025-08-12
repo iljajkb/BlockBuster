@@ -32,7 +32,7 @@ public class BallTest {
         MyVector position = new MyVector(1200, 0);
         MyVector velocityVector = new MyVector(5, 5);
         Ball ball = new Ball(position, velocityVector);
-        Player player = new Player("name");
+        Player player = new Player();
         CollisionHandler.checkEdgeCollision(ball, player);
         assertThat(ball.getVelocity()).isEqualTo(new MyVector(-5, -5));
     }
@@ -55,7 +55,7 @@ public class BallTest {
     @DisplayName("Check for PLayer losing one life when Ball hitting bottom and reset")
     void checkForLifeLoss1() {
         // Arrange
-        Player p1 = new Player("p1");
+        Player p1 = new Player();
         MyVector position = new MyVector(0, GameConfig.FRAME_HEIGHT);
         MyVector velocityVector = new MyVector(0, 0);
         Ball ball = new Ball(position, velocityVector);

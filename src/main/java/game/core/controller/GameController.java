@@ -19,6 +19,8 @@ public class GameController {
     private final Ball ball;
     private final Paddle paddle;
     private final Player p1;
+    private Block[][] blocks;
+
 
     private boolean paused = false;
     private boolean gameStarted = false;
@@ -28,7 +30,7 @@ public class GameController {
         this.canvas = canvas;
         this.ball = new Ball(new MyVector(600, 600), new MyVector(4, -4));
         this.paddle = new Paddle(GameConfig.FRAME_WIDTH / 2);
-        this.p1 = new Player("p1");
+        this.p1 = new Player();
     }
 
     public void handleKeyPress(KeyEvent e) {
@@ -48,6 +50,7 @@ public class GameController {
     }
 
     private void startGameLoop() {
+        Block[][] blocks = BlockGrid.renderBlockGrid(gc, 6,5);
         new AnimationTimer() {
             @Override
             public void handle(long now) {
@@ -76,11 +79,17 @@ public class GameController {
                 // Render
                 // gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
-                Block[][] blocks = BlockGrid.renderBlockGrid(gc, 6,5);
-                CollisionHandler.checkBlockCollision(ball, blocks);
+                for (Block[] row : blocks) {
+                    for (Block b : row) {
+                        b.render(gc); // zeichnet nur, wenn !isDestroyed()
+                    }
+                }
+                CollisionHandler.checkBlockCollision(ball, blocks, p1);
                 p1.renderLives(gc);
+                p1.renderScore(gc);
                 paddle.render(gc);
                 ball.render(gc);
+
 
             }
         }.start();
