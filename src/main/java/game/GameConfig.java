@@ -15,4 +15,7 @@ public class GameConfig {
 
     public static final Color COLOR_1 = Color.ORANGERED;
     public static final Color BACKGROUND_COLOR = Color.DARKBLUE;
+
+    public static final int BLOCK_WIDTH = 50;
+    public static final int BLOCK_HEIGHT = 25;
 }

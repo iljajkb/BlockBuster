@@ -8,6 +8,7 @@ import javafx.scene.paint.Color;
 public class Ball {
     private MyVector position;
     private MyVector velocity;
+    private BallEffects currentEffect;
 
     private int damage = 50;
 
@@ -39,6 +40,10 @@ public class Ball {
 
     public int getCurrentDamage() {
         return damage;
+    }
+
+    public BallEffects getCurrentEffect() {
+        return currentEffect;
     }
 
     protected void setDamage(int damage) {

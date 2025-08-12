@@ -1,8 +1,7 @@
 package game.core.controller;
 
 import game.GameConfig;
-import game.core.entities.MyVector;
-import game.core.entities.Player;
+import game.core.entities.*;
 import game.core.entities.ball.Ball;
 import game.core.entities.paddle.Paddle;
 import game.core.logic.CollisionHandler;
@@ -27,7 +26,7 @@ public class GameController {
     public GameController(GraphicsContext gc, Canvas canvas) {
         this.gc = gc;
         this.canvas = canvas;
-        this.ball = new Ball(new MyVector(100, 100), new MyVector(4, -4));
+        this.ball = new Ball(new MyVector(600, 600), new MyVector(4, -4));
         this.paddle = new Paddle(GameConfig.FRAME_WIDTH / 2);
         this.p1 = new Player("p1");
     }
@@ -70,12 +69,15 @@ public class GameController {
 
                 ball.move();
                 CollisionHandler.checkForPaddleCollision(ball, paddle);
-                // (Optional) Wände abprallen lassen:
+
                 CollisionHandler.checkEdgeCollision(ball, p1);
 
-                // Render
-                gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
+                // Render
+                // gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+
+                Block[][] blocks = BlockGrid.renderBlockGrid(gc, 6,5);
+                CollisionHandler.checkBlockCollision(ball, blocks);
                 p1.renderLives(gc);
                 paddle.render(gc);
                 ball.render(gc);
