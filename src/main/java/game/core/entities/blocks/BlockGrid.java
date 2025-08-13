@@ -1,6 +1,7 @@
-package game.core.entities;
+package game.core.entities.blocks;
 
 import game.GameConfig;
+import game.core.entities.MyVector;
 import javafx.scene.canvas.GraphicsContext;
 
 public class BlockGrid {
@@ -15,7 +16,7 @@ public class BlockGrid {
             for (int c = 0; c < height; c++) {
                 double x = margin + c * (GameConfig.BLOCK_WIDTH + hGap);
                 StandardBlock block = new StandardBlock();
-                block.setPosition(new  MyVector(x, y));
+                block.setPosition(new MyVector(x, y));
                 grid[r][c] = block;
             }
         }

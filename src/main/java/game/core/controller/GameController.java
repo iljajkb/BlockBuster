@@ -3,6 +3,8 @@ package game.core.controller;
 import game.GameConfig;
 import game.core.entities.*;
 import game.core.entities.ball.Ball;
+import game.core.entities.blocks.Block;
+import game.core.entities.blocks.BlockGrid;
 import game.core.entities.paddle.Paddle;
 import game.core.logic.CollisionHandler;
 import javafx.animation.AnimationTimer;
@@ -11,8 +13,6 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-
-import javax.swing.plaf.synth.ColorType;
 
 public class GameController {
 
@@ -72,7 +72,7 @@ public class GameController {
                     drawCenteredText(gc, "Press SPACE to start the Game", GameConfig.FRAME_HEIGHT / 2.0, 40);
                 }
                 if (gameStarted) {
-                    // Pause
+
                     if (paused) {
                         gc.setFill(Color.WHITE);
                         drawCenteredText(gc, "PAUSED\nPRESS ESC TO CONTINUE", GameConfig.FRAME_HEIGHT / 2.0, 20);
