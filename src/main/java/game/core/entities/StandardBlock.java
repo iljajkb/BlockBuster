@@ -27,9 +27,6 @@ public class StandardBlock implements Block {
         if (!isDestroyed()) {
             gc.setFill(GameConfig.COLOR_1);
             gc.fillRect(pos.x, pos.y, GameConfig.BLOCK_WIDTH, GameConfig.BLOCK_HEIGHT);
-
-//            gc.setStroke(Color.BLACK);
-//            gc.strokeRect(pos.x, pos.y, GameConfig.BLOCK_WIDTH, GameConfig.BLOCK_HEIGHT);
         }
     }
 

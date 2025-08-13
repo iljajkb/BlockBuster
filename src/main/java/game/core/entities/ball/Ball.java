@@ -12,6 +12,8 @@ public class Ball {
 
     private int damage = 50;
 
+    private double speed = 5.0;
+
     public Ball(MyVector position, MyVector velocity) {
         this.position = position;
         this.velocity = velocity;
@@ -34,6 +36,10 @@ public class Ball {
         return velocity;
     }
 
+    public double getCurrentSpeed() {
+        return speed;
+    }
+
     public void setVelocity(MyVector vel) {
         this.velocity = vel;
     }
@@ -50,6 +56,9 @@ public class Ball {
         this.damage = damage;
     }
 
+    public void constSpeedIncrement() {
+        this.velocity = this.velocity.scale(1.02);
+    }
 
     public void render(GraphicsContext gc) {
         gc.setFill(GameConfig.COLOR_1);

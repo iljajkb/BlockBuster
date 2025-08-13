@@ -3,7 +3,6 @@ package game.core.logic;
 import game.GameConfig;
 import game.core.entities.Block;
 import game.core.entities.MyVector;
-import game.core.entities.ball.BallEffects;
 import game.core.entities.paddle.Paddle;
 import game.core.entities.Player;
 import game.core.entities.ball.Ball;
@@ -19,9 +18,10 @@ public class CollisionHandler {
         boolean withinY = pos.y + GameConfig.BALL_RADIUS >= paddle.getY() - GameConfig.PADDLE_HEIGHT / 2.0 &&
                 pos.y - GameConfig.BALL_RADIUS <= paddle.getY() + GameConfig.PADDLE_HEIGHT;
         if (withinX && withinY) {
-            vel = vel.flipY();
+            paddle.collisionWithBall(ball);
+            // vel = vel.flipY();
         }
-        ball.setVelocity(vel);
+        // ball.setVelocity(vel);
     }
 
     public static void checkEdgeCollision(Ball ball, Player player) {
@@ -40,7 +40,7 @@ public class CollisionHandler {
         ball.setVelocity(vel);
     }
 
-    private static boolean isColliding(Ball ball, Block block) {
+    private static boolean ballIsCollidingWithBlock(Ball ball, Block block) {
         MyVector ballPos = ball.getPosition();
         MyVector blockPos = block.getPosition();
 
@@ -55,7 +55,7 @@ public class CollisionHandler {
     public static void checkBlockCollision(Ball ball, Block[][] blocks, Player player) {
         for (Block[] row : blocks) {
             for (Block block : row) {
-                if (!block.isDestroyed() && isColliding(ball, block)) {
+                if (!block.isDestroyed() && ballIsCollidingWithBlock(ball, block)) {
                     block.hit(ball, player);
 
                     MyVector ballPos = ball.getPosition();
