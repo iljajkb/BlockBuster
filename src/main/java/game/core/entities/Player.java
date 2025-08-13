@@ -59,4 +59,8 @@ public class Player {
         gc.fillText("SCORE: " + score, GameConfig.FRAME_WIDTH - 125, 35);
     }
 
+    public void reset() {
+        score = 0;
+        lives = 3;
+    }
 }

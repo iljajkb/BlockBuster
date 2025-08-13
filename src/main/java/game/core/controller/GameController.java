@@ -12,6 +12,8 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
+import javax.swing.plaf.synth.ColorType;
+
 public class GameController {
 
     private final GraphicsContext gc;
@@ -20,10 +22,12 @@ public class GameController {
     private final Paddle paddle;
     private final Player p1;
     private Block[][] blocks;
+    private int highscore;
 
 
     private boolean paused = false;
     private boolean gameStarted = false;
+    private boolean gameOver = false;
 
     public GameController(GraphicsContext gc, Canvas canvas) {
         this.gc = gc;
@@ -35,62 +39,70 @@ public class GameController {
 
     public void handleKeyPress(KeyEvent e) {
         switch (e.getCode()) {
-            case SPACE, ENTER -> gameStarted = true;
+            case SPACE, ENTER -> {
+                if (!gameStarted) {gameStarted = true;}
+                else if (gameOver) {resetGame();}
+            }
             case LEFT -> { if (!paused) paddle.moveLeft(); }
             case RIGHT -> { if (!paused) paddle.moveRight(); }
-            case ESCAPE -> paused = !paused;
+            case ESCAPE -> {
+                if(!gameOver && gameStarted) {paused = !paused;}
+            }
         }
     }
 
     public void showStartScreen() {
-        gc.setFill(Color.WHITE);
-        gc.setFont(new Font(50));
-        drawCenteredText(gc, "Press SPACE to start the Game", GameConfig.FRAME_HEIGHT / 2.0, 40);
         startGameLoop();
     }
 
     private void startGameLoop() {
-        Block[][] blocks = BlockGrid.renderBlockGrid(gc, 6,5);
+        highscore = 0;
+        blocks = BlockGrid.renderBlockGrid(gc, 6,5);
         new AnimationTimer() {
             @Override
             public void handle(long now) {
 
                 gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
-                // Pause
-                if (paused) {
+                gameOver = p1.checkForGameOver();
+
+                if (!gameStarted && !p1.checkForGameOver()) {
                     gc.setFill(Color.WHITE);
-                    drawCenteredText(gc, "PAUSED\nPRESS ESC TO CONTINUE", GameConfig.FRAME_HEIGHT / 2.0, 20);
-                    return;
+                    gc.setFont(new Font(50));
+                    drawCenteredText(gc, "Press SPACE to start the Game", GameConfig.FRAME_HEIGHT / 2.0, 40);
                 }
-                // Game Over
-                if (p1.checkForGameOver()) {
-                    drawCenteredText(gc, "GAME OVER", GameConfig.FRAME_HEIGHT / 2.0, 30);
-                    ball.setVelocity(new MyVector(0, 0));
-                    return;
-                }
-
-                ball.move();
-                CollisionHandler.checkForPaddleCollision(ball, paddle);
-
-                CollisionHandler.checkEdgeCollision(ball, p1);
-
-
-                // Render
-                // gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-
-                for (Block[] row : blocks) {
-                    for (Block b : row) {
-                        b.render(gc); // zeichnet nur, wenn !isDestroyed()
+                if (gameStarted) {
+                    // Pause
+                    if (paused) {
+                        gc.setFill(Color.WHITE);
+                        drawCenteredText(gc, "PAUSED\nPRESS ESC TO CONTINUE", GameConfig.FRAME_HEIGHT / 2.0, 20);
+                        return;
                     }
+                    // Game Over
+                    if (gameOver) {
+                        renderGameOver(gc);
+                        if (p1.getScore() > highscore) {
+                            highscore = p1.getScore();
+                        }
+                        return;
+                    }
+
+                    ball.move();
+                    CollisionHandler.checkForPaddleCollision(ball, paddle);
+
+                    CollisionHandler.checkEdgeCollision(ball, p1);
+
+                    for (Block[] row : blocks) {
+                        for (Block b : row) {
+                            b.render(gc); // zeichnet nur, wenn !isDestroyed()
+                        }
+                    }
+                    CollisionHandler.checkBlockCollision(ball, blocks, p1);
+                    p1.renderLives(gc);
+                    p1.renderScore(gc);
+                    paddle.render(gc);
+                    ball.render(gc);
                 }
-                CollisionHandler.checkBlockCollision(ball, blocks, p1);
-                p1.renderLives(gc);
-                p1.renderScore(gc);
-                paddle.render(gc);
-                ball.render(gc);
-
-
             }
         }.start();
 
@@ -104,6 +116,25 @@ public class GameController {
         double textWidth = helper.getLayoutBounds().getWidth();
         double x = (GameConfig.FRAME_WIDTH - textWidth) / 2;
         gc.fillText(text, x, y);
+    }
+
+    private void renderGameOver(GraphicsContext gc) {
+
+        gc.setFill(Color.DARKRED);
+        drawCenteredText(gc, "GAME OVER", GameConfig.FRAME_HEIGHT / 2.0, 40);
+        gc.setFill(Color.WHITE);
+        drawCenteredText(gc, "SCORE: " + p1.getScore(), GameConfig.FRAME_HEIGHT / 2.0 + 30, 20);
+        drawCenteredText(gc, "HIGHSCORE: " + highscore, GameConfig.FRAME_HEIGHT / 2.0 + 60, 20);
+        drawCenteredText(gc, "Press space to play again", GameConfig.FRAME_HEIGHT / 2.0 + 90, 20);
+    }
+
+    private void resetGame() {
+        p1.reset(); // Score, Leben zurücksetzen
+        ball.reset(new MyVector(600, 600), new MyVector(4, -4)); // Startposition & Geschwindigkeit
+        blocks = BlockGrid.renderBlockGrid(gc, 6, 5); // alte Blöcke ersetzen
+        gameOver = false;
+        gameStarted = true;
+        paused = false;
     }
 
 }
