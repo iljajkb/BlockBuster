@@ -9,10 +9,6 @@ public class Player {
     private int lives = 3;
     private int score = 0;
 
-
-    public Player() {
-    }
-
     public void loseLife() {
         lives--;
     }
@@ -24,10 +20,6 @@ public class Player {
     public boolean checkForGameOver() {
         return lives <= 0;
     }
-
-//    private void renderGameOver(GraphicsContext gc) {
-//        gc.fillText("GAME OVER", 50, 50);
-//    }
 
     public void increaseScore(int increment) {
         score = score + increment;
@@ -56,7 +48,7 @@ public class Player {
     public void renderScore(GraphicsContext gc) {
         gc.setFill(Color.WHITE);
         gc.setFont(new Font(20));
-        gc.fillText("SCORE: " + score, GameConfig.FRAME_WIDTH - 125, 35);
+        gc.fillText("SCORE: " + score, GameConfig.FRAME_WIDTH - 150, 35);
     }
 
     public void reset() {

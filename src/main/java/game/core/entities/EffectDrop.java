@@ -13,10 +13,12 @@ public class EffectDrop {
     private PaddleEffects paddleEffects;
     private Ball ball;
     private Paddle paddle;
+    private boolean goodEffect;
 
-    public EffectDrop(Ball ball, Paddle paddle) {
+    public EffectDrop(Ball ball, Paddle paddle, boolean goodEffect) {
         this.ball = ball;
         this.paddle = paddle;
+        this.goodEffect = goodEffect;
     }
 
     public BallEffects getBallEffects() {

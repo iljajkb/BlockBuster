@@ -9,13 +9,19 @@ public class BlockGrid {
         Block[][] grid = new Block[width][height];
         int vGap = 10;
         int hGap = 15;
-        int margin = 50;
+        int margin = 100;
 
         for (int r = 0; r < width; r++) {
             double y = margin + r * (GameConfig.BLOCK_HEIGHT + vGap);
             for (int c = 0; c < height; c++) {
                 double x = margin + c * (GameConfig.BLOCK_WIDTH + hGap);
-                StandardBlock block = new StandardBlock();
+                double random = Math.random(); // probability for special blocks
+                Block block;
+                if (random > 0.9) {
+                    block = new ExtraBallBlock();
+                } else {
+                    block = new StandardBlock();
+                }
                 block.setPosition(new MyVector(x, y));
                 grid[r][c] = block;
             }

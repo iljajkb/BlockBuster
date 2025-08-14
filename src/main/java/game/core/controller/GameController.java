@@ -14,6 +14,9 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class GameController {
 
     private final GraphicsContext gc;
@@ -24,6 +27,8 @@ public class GameController {
     private Block[][] blocks;
     private int highscore;
 
+    private static final List<Ball> balls = new ArrayList<>();
+
 
     private boolean paused = false;
     private boolean gameStarted = false;
@@ -32,7 +37,8 @@ public class GameController {
     public GameController(GraphicsContext gc, Canvas canvas) {
         this.gc = gc;
         this.canvas = canvas;
-        this.ball = new Ball(new MyVector(600, 600), new MyVector(4, -4));
+        this.ball = new Ball(new MyVector(600, 820), new MyVector(Math.random(), -4));
+        addBall(this.ball);
         this.paddle = new Paddle(GameConfig.FRAME_WIDTH / 2);
         this.p1 = new Player();
     }
@@ -88,20 +94,23 @@ public class GameController {
                     }
 
                     ball.move();
-                    CollisionHandler.checkForPaddleCollision(ball, paddle);
+                    CollisionHandler.checkForPaddleCollision(balls, paddle);
 
-                    CollisionHandler.checkEdgeCollision(ball, p1);
+                    CollisionHandler.checkEdgeCollision(balls, p1);
 
                     for (Block[] row : blocks) {
                         for (Block b : row) {
                             b.render(gc); // zeichnet nur, wenn !isDestroyed()
                         }
                     }
-                    CollisionHandler.checkBlockCollision(ball, blocks, p1);
+                    CollisionHandler.checkBlockCollision(balls, blocks, p1);
                     p1.renderLives(gc);
                     p1.renderScore(gc);
                     paddle.render(gc);
-                    ball.render(gc);
+                    for (Ball b : balls) {
+                        b.move();
+                        b.render(gc);
+                    }
                 }
             }
         }.start();
@@ -135,6 +144,10 @@ public class GameController {
         gameOver = false;
         gameStarted = true;
         paused = false;
+    }
+
+    public static void addBall(Ball b) {
+        balls.add(b);
     }
 
 }

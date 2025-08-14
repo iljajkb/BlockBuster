@@ -12,7 +12,7 @@ public class Ball {
 
     private int damage = 50;
 
-    private double speed = 5.0;
+    private double speed = 4.0;
 
     public Ball(MyVector position, MyVector velocity) {
         this.position = position;
