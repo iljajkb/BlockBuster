@@ -44,6 +44,7 @@ public class CollisionHandler {
                     player.loseLife();
                     // ball.reset(new MyVector(600, 450), new MyVector(4, 4));
                     ball.reset(paddle);
+                    GameController.removeAllExtraBalls();
                     return;
                 } else if (ball.getType() == Ball.BallType.EXTRA) {
                     GameController.removeBall(ball);

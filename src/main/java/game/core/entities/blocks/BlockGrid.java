@@ -7,9 +7,10 @@ import javafx.scene.canvas.GraphicsContext;
 public class BlockGrid {
     private static Block[][] createGrid(int width, int height) {
         Block[][] grid = new Block[width][height];
-        int vGap = 10;
+        int vGap = 15;
         int hGap = 15;
-        int margin = 100;
+        int margin = 200;
+        int topMargin = 75;
 
         for (int r = 0; r < width; r++) {
             double y = margin + r * (GameConfig.BLOCK_HEIGHT + vGap);
@@ -38,4 +39,16 @@ public class BlockGrid {
         }
         return grid;
     }
+
+    public static boolean allBlocksDestroyed(Block[][] grid) {
+        for (Block[] blocks : grid) {
+            for (Block block : blocks) {
+                if (!block.isDestroyed()) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
 }

@@ -19,7 +19,7 @@ public class Ball {
 
     private int damage = 50;
 
-    private double speed = 4.0;
+    private double speed = 4.25;
 
     public static Ball createMainBall(Paddle paddle) {
         Ball b = new Ball(new MyVector(0,0), new MyVector(0,0), BallType.MAIN);

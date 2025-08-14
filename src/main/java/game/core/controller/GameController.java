@@ -27,8 +27,9 @@ public class GameController {
     private Block[][] blocks;
     private int highscore;
 
-    private static final List<Ball> balls = new ArrayList<>();
+    private int initalWidth, initalHeight = 5;
 
+    private static final List<Ball> balls = new ArrayList<>();
 
     private boolean paused = false;
     private boolean gameStarted = false;
@@ -72,6 +73,13 @@ public class GameController {
                 gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
                 gameOver = p1.checkForGameOver();
+
+                if (BlockGrid.allBlocksDestroyed(blocks)) {
+                    ball.reset(paddle);
+                    initalWidth = initalWidth + 1;
+                    initalHeight = initalHeight + 1;
+                    blocks = BlockGrid.renderBlockGrid(gc, initalWidth,initalHeight); // vorläufig
+                }
 
                 if (!gameStarted && !p1.checkForGameOver()) {
                     gc.setFill(Color.WHITE);
@@ -119,7 +127,6 @@ public class GameController {
                 }
             }
         }.start();
-
     }
 
     // Hilfsfunktion für zentrierten Text (GPT 5 Kreation)
@@ -149,6 +156,7 @@ public class GameController {
         gameOver = false;
         gameStarted = true;
         paused = false;
+        removeAllExtraBalls();
     }
 
     public static void addBall(Ball b) {
@@ -157,6 +165,10 @@ public class GameController {
 
     public static void removeBall(Ball b) {
         balls.remove(b);
+    }
+
+    public static void removeAllExtraBalls() {
+        balls.removeIf(b -> !b.isMain());
     }
 
 }
