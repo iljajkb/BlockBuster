@@ -17,7 +17,7 @@ public class ExtraBallBlock extends Block {
     public void hit(Ball ball, Player player) {
         hp = Math.max(0, hp - ball.getCurrentDamage());
         player.increaseScore(ball.getCurrentDamage());
-        Ball additionalBall = new Ball(this.getPosition(), new MyVector(1, -4));
+        Ball additionalBall = Ball.createExtraBall(this.getPosition(), new MyVector(1, -4));
         GameController.addBall(additionalBall);
     }
 

@@ -1,6 +1,7 @@
 package game.core.logic;
 
 import game.GameConfig;
+import game.core.controller.GameController;
 import game.core.entities.blocks.Block;
 import game.core.entities.MyVector;
 import game.core.entities.paddle.Paddle;
@@ -14,21 +15,21 @@ public class CollisionHandler {
     public static void checkForPaddleCollision(List<Ball> balls, Paddle paddle) {
         for (Ball ball : balls) {
             MyVector pos = ball.getPosition();
-            MyVector vel = ball.getVelocity();
 
-            boolean withinX = pos.x >= paddle.getX() - paddle.getPaddleWidth() / 2.0 &&
-                    pos.x <= paddle.getX() + paddle.getPaddleWidth() / 2.0;
-            boolean withinY = pos.y + GameConfig.BALL_RADIUS >= paddle.getY() - GameConfig.PADDLE_HEIGHT / 2.0 &&
-                    pos.y - GameConfig.BALL_RADIUS <= paddle.getY() + GameConfig.PADDLE_HEIGHT;
-            if (withinX && withinY) {
-                paddle.collisionWithBall(ball);
-                // vel = vel.flipY();
+            if (!ball.isAttached()) { // paddle kollision nur bei abgestoßenden ball
+                boolean withinX = pos.x >= paddle.getX() - paddle.getPaddleWidth() / 2.0 &&
+                        pos.x <= paddle.getX() + paddle.getPaddleWidth() / 2.0;
+                boolean withinY = pos.y + GameConfig.BALL_RADIUS >= paddle.getY() - GameConfig.PADDLE_HEIGHT / 2.0 &&
+                        pos.y - GameConfig.BALL_RADIUS <= paddle.getY() + GameConfig.PADDLE_HEIGHT;
+                if (withinX && withinY) {
+                    paddle.collisionWithBall(ball);
+
+                }
             }
         }
-        // ball.setVelocity(vel);
     }
 
-    public static void checkEdgeCollision(List<Ball> balls, Player player) {
+    public static void checkEdgeCollision(List<Ball> balls, Player player, Paddle paddle) {
         for (Ball ball : balls) {
             MyVector pos = ball.getPosition();
             MyVector vel = ball.getVelocity();
@@ -39,8 +40,14 @@ public class CollisionHandler {
                 vel = vel.flipY();
             }
             if (pos.y >= GameConfig.FRAME_HEIGHT) {
-                player.loseLife();
-                ball.reset(new MyVector(600, 450), new MyVector(4, 4));
+                if (ball.isMain()) {
+                    player.loseLife();
+                    // ball.reset(new MyVector(600, 450), new MyVector(4, 4));
+                    ball.reset(paddle);
+                    return;
+                } else if (ball.getType() == Ball.BallType.EXTRA) {
+                    GameController.removeBall(ball);
+                }
             }
             ball.setVelocity(vel);
         }

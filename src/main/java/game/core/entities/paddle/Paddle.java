@@ -17,11 +17,11 @@ public class Paddle {
         this.xPos = xPos;
     }
 
-    public int getX() {
+    public double getX() {
         return xPos;
     }
 
-    public int getY() {
+    public double getY() {
         return Y_POS;
     }
 

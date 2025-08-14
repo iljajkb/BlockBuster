@@ -37,9 +37,9 @@ public class GameController {
     public GameController(GraphicsContext gc, Canvas canvas) {
         this.gc = gc;
         this.canvas = canvas;
-        this.ball = new Ball(new MyVector(600, 820), new MyVector(Math.random(), -4));
-        addBall(this.ball);
         this.paddle = new Paddle(GameConfig.FRAME_WIDTH / 2);
+        this.ball = Ball.createMainBall(paddle);
+        addBall(this.ball);
         this.p1 = new Player();
     }
 
@@ -49,6 +49,7 @@ public class GameController {
                 if (!gameStarted) {gameStarted = true;}
                 else if (gameOver) {resetGame();}
             }
+            case UP -> { if (ball.isAttached()) ball.launch(new MyVector(0, -1).scale(ball.getCurrentSpeed())); }
             case LEFT -> { if (!paused) paddle.moveLeft(); }
             case RIGHT -> { if (!paused) paddle.moveRight(); }
             case ESCAPE -> {
@@ -96,7 +97,7 @@ public class GameController {
                     ball.move();
                     CollisionHandler.checkForPaddleCollision(balls, paddle);
 
-                    CollisionHandler.checkEdgeCollision(balls, p1);
+                    CollisionHandler.checkEdgeCollision(balls, p1, paddle);
 
                     for (Block[] row : blocks) {
                         for (Block b : row) {
@@ -108,7 +109,11 @@ public class GameController {
                     p1.renderScore(gc);
                     paddle.render(gc);
                     for (Ball b : balls) {
-                        b.move();
+                        if (b.isMain() && b.isAttached()) {
+                            b.followPaddle(paddle);
+                        } else {
+                            b.move();
+                        }
                         b.render(gc);
                     }
                 }
@@ -139,7 +144,7 @@ public class GameController {
 
     private void resetGame() {
         p1.reset(); // Score, Leben zurücksetzen
-        ball.reset(new MyVector(600, 600), new MyVector(4, -4)); // Startposition & Geschwindigkeit
+        ball.reset(paddle); // Startposition & Geschwindigkeit
         blocks = BlockGrid.renderBlockGrid(gc, 6, 5); // alte Blöcke ersetzen
         gameOver = false;
         gameStarted = true;
@@ -148,6 +153,10 @@ public class GameController {
 
     public static void addBall(Ball b) {
         balls.add(b);
+    }
+
+    public static void removeBall(Ball b) {
+        balls.remove(b);
     }
 
 }

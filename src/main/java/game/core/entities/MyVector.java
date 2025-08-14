@@ -1,5 +1,7 @@
 package game.core.entities;
 
+import java.util.Objects;
+
 public class MyVector {
     public double x, y;
 
@@ -36,11 +38,16 @@ public class MyVector {
     // value-object
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof MyVector other)) {
-            return false;
-        } else {
-            return this.x == other.x && this.y == other.y;
-        }
+        if (this == o) return true; // gleiche Referenz
+        if (!(o instanceof MyVector other)) return false;
+        double eps = 1e-9;
+        return Math.abs(this.x - other.x) < eps &&
+                Math.abs(this.y - other.y) < eps;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
     }
 
 }
