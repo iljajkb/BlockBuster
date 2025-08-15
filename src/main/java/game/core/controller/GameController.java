@@ -131,7 +131,7 @@ public class GameController {
                         if (b.isMain() && b.isAttached()) {
                             b.followPaddle(paddle);
                         } else {
-                            b.move();
+                            b.move(dt);
                         }
                         b.render(gc);
                     }
