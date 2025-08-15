@@ -17,7 +17,8 @@ public class ExtraBallBlock extends Block {
     public void hit(Ball ball, Player player) {
         hp = Math.max(0, hp - ball.getCurrentDamage());
         player.increaseScore(ball.getCurrentDamage());
-        Ball additionalBall = Ball.createExtraBall(this.getPosition(), new MyVector(1, -4));
+        MyVector dir = new MyVector(Math.random(), -1).normalize(); // direction only
+        Ball additionalBall = Ball.createExtraBall(this.getPosition(), dir.scale(GameConfig.INITIAL_BALL_SPEED - 1.5)); // extra ball little slower
         GameController.addBall(additionalBall);
     }
 

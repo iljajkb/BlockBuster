@@ -23,7 +23,6 @@ public class CollisionHandler {
                         pos.y - GameConfig.BALL_RADIUS <= paddle.getY() + GameConfig.PADDLE_HEIGHT;
                 if (withinX && withinY) {
                     paddle.collisionWithBall(ball);
-
                 }
             }
         }

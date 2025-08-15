@@ -80,9 +80,9 @@ public class Ball {
         attached = true;
     }
 
-    public void launch(MyVector initialVelocity) {
+    public void launch(MyVector vel) {
         if (!attached) return;
-        this.velocity = initialVelocity;
+        this.velocity = vel;
         this.attached = false;
     }
 
