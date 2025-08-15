@@ -61,11 +61,7 @@ public class GameController {
         }
     }
 
-    public void showStartScreen() {
-        startGameLoop();
-    }
-
-    private void startGameLoop() {
+    public void startGameLoop() {
         highscore = 0;
         blocks = BlockGrid.renderBlockGrid(gc, 6,5);
         new AnimationTimer() {
@@ -76,11 +72,10 @@ public class GameController {
 
                 gameOver = p1.checkForGameOver();
 
+                // --- Level cleared ---
                 if (BlockGrid.allBlocksDestroyed(blocks)) {
-                    ball.reset(paddle);
-                    initalWidth = initalWidth + 1;
-                    initalHeight = initalHeight + 1;
-                    blocks = BlockGrid.renderBlockGrid(gc, initalWidth,initalHeight); // vorläufig
+                    renderNewLevel();
+                    lastNs = 0; // prevent dt spike
                 }
 
                 if (!gameStarted && !p1.checkForGameOver()) {
@@ -109,35 +104,67 @@ public class GameController {
                     lastNs = now;
 
                     // optional: clamp to avoid spikes after stalls
-                    if (dt > 0.033) dt = 0.033; // ~30 FPS physics
+                    if (dt > 0.25) dt = 0.25;
 
-                    ball.move(dt);
+                    // physics substeps for stable collisions
+                    final double STEP = 1.0 / 120.0; // 120 Hz
+                    while (dt > 0) {
+                        double use = Math.min(dt, STEP);
+                        updatePhysics(use); // move ALL balls here, handle collisions
+                        dt -= use;
+                    }
 
-                    // ball.move();
-                    CollisionHandler.checkForPaddleCollision(balls, paddle);
+//                    ball.move(dt);
+//
+//                    // ball.move();
+//                    CollisionHandler.checkForPaddleCollision(balls, paddle);
+//
+//                    CollisionHandler.checkEdgeCollision(balls, p1, paddle);
 
-                    CollisionHandler.checkEdgeCollision(balls, p1, paddle);
-
-                    for (Block[] row : blocks) {
-                        for (Block b : row) {
-                            b.render(gc); // zeichnet nur, wenn !isDestroyed()
+                    // --- Follow paddle for attached main ball(s) BEFORE rendering ---
+                    for (Ball b : balls) {
+                        if (b.isMain() && b.isAttached()) {
+                            b.followPaddle(paddle);
                         }
                     }
-                    CollisionHandler.checkBlockCollision(balls, blocks, p1);
+
+                    // --- Render (draw only) ---
+                    for (Block[] row : blocks) {
+                        for (Block blk : row) {
+                            blk.render(gc);
+                        }
+                    }
+
                     p1.renderLives(gc);
                     p1.renderScore(gc);
                     paddle.render(gc);
                     for (Ball b : balls) {
-                        if (b.isMain() && b.isAttached()) {
-                            b.followPaddle(paddle);
-                        } else {
-                            b.move(dt);
-                        }
                         b.render(gc);
                     }
                 }
             }
         }.start();
+    }
+
+    private void renderNewLevel() {
+        ball.reset(paddle);
+        if (initalHeight < 8 && initalWidth < 8) {
+            initalHeight++;
+            initalWidth++;
+        }
+        removeAllExtraBalls();
+        blocks = BlockGrid.renderBlockGrid(gc, initalWidth,initalHeight); // vorläufig
+        double incrementedSpeed = ball.getSpeed() * 1.05;
+        ball.setSpeed(incrementedSpeed);
+    }
+
+    private void updatePhysics(double dt) {
+        for (Ball b : balls) {
+            if (!b.isAttached()) b.move(dt); // position += velocity(px/s) * dt
+        }
+        CollisionHandler.checkForPaddleCollision(balls, paddle);
+        CollisionHandler.checkEdgeCollision(balls, p1, paddle);
+        CollisionHandler.checkBlockCollision(balls, blocks, p1);
     }
 
     // Hilfsfunktion für zentrierten Text (GPT 5 Kreation)

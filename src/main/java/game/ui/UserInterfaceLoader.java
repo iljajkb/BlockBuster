@@ -49,6 +49,6 @@ public class UserInterfaceLoader extends Application {
 
         scene.setOnKeyPressed(gameController::handleKeyPress);
 
-        gameController.showStartScreen();
+        gameController.startGameLoop();
     }
 }
