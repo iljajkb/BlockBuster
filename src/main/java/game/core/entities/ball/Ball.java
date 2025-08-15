@@ -19,8 +19,6 @@ public class Ball {
 
     private int damage = 50;
 
-    private double speed = 4.25;
-
     public static Ball createMainBall(Paddle paddle) {
         Ball b = new Ball(new MyVector(0,0), new MyVector(0,0), BallType.MAIN);
         b.reset(paddle);     // setzt Position über Paddle + attached=true
@@ -36,12 +34,27 @@ public class Ball {
         this.type = type;
     }
 
+    public double getSpeed() {
+        return velocity.magnitude();
+    }
+
+    public void setSpeed(double s) {
+        double m = velocity.magnitude();
+        if (m > 0) velocity = velocity.scale(s / m);
+    }
+
     public BallType getType() { return type; }
     public boolean isMain() { return type == BallType.MAIN; }
 
-    public void move() {
-        position =  position.add(velocity);
+    // >>> Change move() to time-based:
+    public void move(double dt) { // dt in seconds
+        position = position.add(velocity.scale(dt));
     }
+
+    // Keep an overload if you need it, but avoid using it in the loop:
+    @Deprecated
+    public void move() { position = position.add(velocity); } // legacy; try not to call it
+
 
     public void reset(MyVector position, MyVector velocity) {
         this.position = position;
@@ -82,10 +95,6 @@ public class Ball {
     }
 
     public boolean isAttached() { return attached; }
-
-    public double getCurrentSpeed() {
-        return speed;
-    }
 
     public void setVelocity(MyVector vel) {
         this.velocity = vel;

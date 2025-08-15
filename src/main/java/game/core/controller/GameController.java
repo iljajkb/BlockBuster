@@ -29,6 +29,8 @@ public class GameController {
 
     private int initalWidth, initalHeight = 5;
 
+    private long lastNs = 0;
+
     private static final List<Ball> balls = new ArrayList<>();
 
     private boolean paused = false;
@@ -50,7 +52,7 @@ public class GameController {
                 if (!gameStarted) {gameStarted = true;}
                 else if (gameOver) {resetGame();}
             }
-            case UP -> { if (ball.isAttached()) ball.launch(new MyVector(0, -1).scale(ball.getCurrentSpeed())); }
+            case UP -> { if (ball.isAttached()) ball.launch(new MyVector(0, -1).scale(GameConfig.INITIAL_BALL_SPEED)); }
             case LEFT -> { if (!paused) paddle.moveLeft(); }
             case RIGHT -> { if (!paused) paddle.moveRight(); }
             case ESCAPE -> {
@@ -102,7 +104,16 @@ public class GameController {
                         return;
                     }
 
-                    ball.move();
+                    if (lastNs == 0) { lastNs = now; return; }
+                    double dt = (now - lastNs) / 1_000_000_000.0; // seconds
+                    lastNs = now;
+
+                    // optional: clamp to avoid spikes after stalls
+                    if (dt > 0.033) dt = 0.033; // ~30 FPS physics
+
+                    ball.move(dt);
+
+                    // ball.move();
                     CollisionHandler.checkForPaddleCollision(balls, paddle);
 
                     CollisionHandler.checkEdgeCollision(balls, p1, paddle);

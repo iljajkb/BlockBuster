@@ -12,10 +12,11 @@ public class GameConfig {
 
     public static final int BALL_RADIUS = 10;
 
-
     public static final Color COLOR_1 = Color.GHOSTWHITE;
     public static final Color BACKGROUND_COLOR = Color.DARKSLATEGRAY;
 
     public static final int BLOCK_WIDTH = 100;
     public static final int BLOCK_HEIGHT = 40;
+
+    public static final double INITIAL_BALL_SPEED = 6.0; // px/s
 }

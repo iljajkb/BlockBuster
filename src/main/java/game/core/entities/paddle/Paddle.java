@@ -56,6 +56,7 @@ public class Paddle {
                 GameConfig.PADDLE_HEIGHT);
     }
 
+    // NOTE: may move to different class for SRP
     public void collisionWithBall(Ball ball) {
         double x0 = xPos; // middle of paddle as default collision angle
 
@@ -68,10 +69,10 @@ public class Paddle {
         double angle = maxAngle * u; // -> ist max 60 deg, weil u wert zwischen 1 und -1 liefert
 
         double dx = Math.sin(angle);
-        double dy = -Math.cos(angle);
+        double dy = -Math.cos(angle); // negative because negative y is moving up
 
         MyVector direction = new MyVector(dx, dy);
-        MyVector newVelocity = direction.scale(ball.getCurrentSpeed());
+        MyVector newVelocity = direction.scale(ball.getSpeed());
 
         ball.setVelocity(newVelocity);
     }
