@@ -37,10 +37,10 @@ public class GameController {
     private boolean gameStarted = false;
     private boolean gameOver = false;
 
-    public GameController(GraphicsContext gc, Canvas canvas) {
+    public GameController(GraphicsContext gc, Canvas canvas, int frameHeight) {
         this.gc = gc;
         this.canvas = canvas;
-        this.paddle = new Paddle(GameConfig.FRAME_WIDTH / 2);
+        this.paddle = new Paddle(GameConfig.FRAME_WIDTH / 2, frameHeight - GameConfig.PADDLE_HEIGHT - 20);
         this.ball = Ball.createMainBall(paddle);
         addBall(this.ball);
         this.p1 = new Player();

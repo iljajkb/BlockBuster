@@ -7,14 +7,15 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 public class Paddle {
-    private final static int Y_POS = GameConfig.FRAME_HEIGHT - 10;
+    private final int yPos;
     private int xPos;
     private int paddleWidth = 120;
 
     private int movingSpeed = 20;
 
-    public Paddle(int xPos) {
+    public Paddle(int xPos, int yPos) {
         this.xPos = xPos;
+        this.yPos = yPos;
     }
 
     public double getX() {
@@ -22,7 +23,7 @@ public class Paddle {
     }
 
     public double getY() {
-        return Y_POS;
+        return yPos;
     }
 
     public void moveLeft() {
@@ -51,7 +52,7 @@ public class Paddle {
     public void render(GraphicsContext gc) {
         gc.setFill(GameConfig.COLOR_1);
         gc.fillRect(xPos - (double) paddleWidth / 2,
-                Y_POS,
+                yPos,
                 paddleWidth,
                 GameConfig.PADDLE_HEIGHT);
     }
