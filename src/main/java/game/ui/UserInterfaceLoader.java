@@ -46,7 +46,7 @@ public class UserInterfaceLoader extends Application {
         Scene scene = new Scene(root, GameConfig.FRAME_WIDTH, frameHeight, GameConfig.BACKGROUND_COLOR);
 
         // Canvas + GC
-        Canvas canvas = new Canvas(GameConfig.FRAME_WIDTH, GameConfig.FRAME_HEIGHT);
+        Canvas canvas = new Canvas(GameConfig.FRAME_WIDTH, frameHeight);
         GraphicsContext gc = canvas.getGraphicsContext2D();
         root.getChildren().add(canvas);
 

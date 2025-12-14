@@ -23,6 +23,7 @@ public class GameController {
     private final Canvas canvas;
     private final Ball ball;
     private final Paddle paddle;
+    private final int frameHeight;
     private final Player p1;
     private Block[][] blocks;
     private int highscore;
@@ -40,6 +41,7 @@ public class GameController {
     public GameController(GraphicsContext gc, Canvas canvas, int frameHeight) {
         this.gc = gc;
         this.canvas = canvas;
+        this.frameHeight = frameHeight;
         this.paddle = new Paddle(GameConfig.FRAME_WIDTH / 2, frameHeight - GameConfig.PADDLE_HEIGHT - 20);
         this.ball = Ball.createMainBall(paddle);
         addBall(this.ball);
@@ -163,7 +165,7 @@ public class GameController {
             if (!b.isAttached()) b.move(dt); // position += velocity(px/s) * dt
         }
         CollisionHandler.checkForPaddleCollision(balls, paddle);
-        CollisionHandler.checkEdgeCollision(balls, p1, paddle);
+        CollisionHandler.checkEdgeCollision(balls, p1, paddle, frameHeight);
         CollisionHandler.checkBlockCollision(balls, blocks, p1);
     }
 

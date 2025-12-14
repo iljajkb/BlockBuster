@@ -28,7 +28,7 @@ public class CollisionHandler {
         }
     }
 
-    public static void checkEdgeCollision(List<Ball> balls, Player player, Paddle paddle) {
+    public static void checkEdgeCollision(List<Ball> balls, Player player, Paddle paddle, int frameHeight) {
         for (Ball ball : balls) {
             MyVector pos = ball.getPosition();
             MyVector vel = ball.getVelocity();
@@ -38,7 +38,7 @@ public class CollisionHandler {
             if (pos.y <= 0) {
                 vel = vel.flipY();
             }
-            if (pos.y >= GameConfig.FRAME_HEIGHT) {
+            if (pos.y >= frameHeight + GameConfig.BALL_RADIUS) {
                 if (ball.isMain()) {
                     player.loseLife();
                     // ball.reset(new MyVector(600, 450), new MyVector(4, 4));
