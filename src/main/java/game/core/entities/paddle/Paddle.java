@@ -11,7 +11,7 @@ public class Paddle {
     private int xPos;
     private int paddleWidth = 120;
 
-    private int movingSpeed = 20;
+    private int movingSpeed = 5;
 
     public Paddle(int xPos, int yPos) {
         this.xPos = xPos;

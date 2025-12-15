@@ -65,6 +65,7 @@ public class UserInterfaceLoader extends Application {
         GameController gameController = new GameController(gc, canvas, frameHeight);
 
         scene.setOnKeyPressed(gameController::handleKeyPress);
+        scene.setOnKeyReleased(gameController::handleKeyRelease);
 
         gameController.startGameLoop();
     }

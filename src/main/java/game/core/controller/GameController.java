@@ -28,6 +28,9 @@ public class GameController {
     private Block[][] blocks;
     private int highscore;
 
+    private boolean moveLeftPressed = false;
+    private boolean moveRightPressed = false;
+
     private int initalWidth, initalHeight = 5;
 
     private long lastNs = 0;
@@ -55,11 +58,19 @@ public class GameController {
                 else if (gameOver) {resetGame();}
             }
             case UP -> { if (ball.isAttached()) ball.launch(new MyVector(0, -1).scale(GameConfig.INITIAL_BALL_SPEED)); }
-            case LEFT -> { if (!paused) paddle.moveLeft(); }
-            case RIGHT -> { if (!paused) paddle.moveRight(); }
             case ESCAPE -> {
                 if(!gameOver && gameStarted) {paused = !paused;}
             }
+            case LEFT -> moveLeftPressed = true;
+            case RIGHT -> moveRightPressed = true;
+        }
+
+    }
+
+    public void handleKeyRelease(KeyEvent e) {
+        switch (e.getCode()) {
+            case LEFT -> moveLeftPressed = false;
+            case RIGHT -> moveRightPressed = false;
         }
     }
 
@@ -113,6 +124,10 @@ public class GameController {
                     while (dt > 0) {
                         double use = Math.min(dt, STEP);
                         updatePhysics(use); // move ALL balls here, handle collisions
+                        if (!paused && gameStarted && !gameOver) {
+                            if (moveLeftPressed) paddle.moveLeft();
+                            if (moveRightPressed) paddle.moveRight();
+                        }
                         dt -= use;
                     }
 
