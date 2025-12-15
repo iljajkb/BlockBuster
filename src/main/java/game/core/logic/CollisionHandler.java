@@ -32,16 +32,21 @@ public class CollisionHandler {
         for (Ball ball : balls) {
             MyVector pos = ball.getPosition();
             MyVector vel = ball.getVelocity();
-            if (pos.x <= 0 || pos.x >= GameConfig.FRAME_WIDTH - GameConfig.BALL_RADIUS * 2) {
+            if (pos.x <= 0) {
+                pos.x = 0;
+                vel = vel.flipX();
+            }
+            if (pos.x >= GameConfig.FRAME_WIDTH - GameConfig.BALL_RADIUS * 2) {
+                pos.x = GameConfig.FRAME_WIDTH - GameConfig.BALL_RADIUS * 2;
                 vel = vel.flipX();
             }
             if (pos.y <= 0) {
+                pos.y = 0;
                 vel = vel.flipY();
             }
             if (pos.y >= frameHeight + GameConfig.BALL_RADIUS) {
                 if (ball.isMain()) {
                     player.loseLife();
-                    // ball.reset(new MyVector(600, 450), new MyVector(4, 4));
                     ball.reset(paddle);
                     GameController.removeAllExtraBalls();
                     return;

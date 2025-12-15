@@ -13,10 +13,6 @@ public class Player {
         lives--;
     }
 
-    public int getLives() {
-        return lives;
-    }
-
     public boolean checkForGameOver() {
         return lives <= 0;
     }
