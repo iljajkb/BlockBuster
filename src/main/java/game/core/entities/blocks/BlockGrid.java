@@ -20,7 +20,10 @@ public class BlockGrid {
                 Block block;
                 if (random > 0.9) {
                     block = new ExtraBallBlock();
-                } else {
+                } else if (random > 0.8) {
+                    block = new BadEffectBlock();
+                }
+                else {
                     block = new StandardBlock();
                 }
                 block.setPosition(new MyVector(x, y));

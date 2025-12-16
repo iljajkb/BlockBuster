@@ -7,7 +7,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 public class Ball {
-    public enum BallType { MAIN, EXTRA }
+    public enum BallType { MAIN, EXTRA, EFFECT }
 
     private final BallType type;
 
@@ -15,7 +15,7 @@ public class Ball {
 
     private MyVector position;
     private MyVector velocity;
-    private BallEffects currentEffect;
+    private Effects currentEffect;
 
     private int damage = 50;
 
@@ -25,7 +25,13 @@ public class Ball {
         return b;
     }
     public static Ball createExtraBall(MyVector position, MyVector velocity) {
-        return new Ball(position, velocity, BallType.EXTRA); // wähle deine Wunschfarbe
+        return new Ball(position, velocity, BallType.EXTRA);
+    }
+
+    public static Ball createEffectBall(MyVector position, MyVector velocity, Effects effect) {
+        Ball effectBall = new Ball(position, velocity, BallType.EFFECT);
+        effectBall.setEffect(effect);
+        return effectBall;
     }
 
     private Ball(MyVector position, MyVector velocity, BallType type) {
@@ -45,6 +51,7 @@ public class Ball {
 
     public BallType getType() { return type; }
     public boolean isMain() { return type == BallType.MAIN; }
+    public boolean isEffect() { return type == BallType.EFFECT; }
 
     // >>> Change move() to time-based:
     public void move(double dt) { // dt in seconds
@@ -54,12 +61,6 @@ public class Ball {
     // Keep an overload if you need it, but avoid using it in the loop:
     @Deprecated
     public void move() { position = position.add(velocity); } // legacy; try not to call it
-
-
-    public void reset(MyVector position, MyVector velocity) {
-        this.position = position;
-        this.velocity = velocity;
-    }
 
     public void followPaddle(Paddle paddle) {
         if (!attached) return;
@@ -104,7 +105,7 @@ public class Ball {
         return damage;
     }
 
-    public BallEffects getCurrentEffect() {
+    public Effects getCurrentEffect() {
         return currentEffect;
     }
 
@@ -117,8 +118,20 @@ public class Ball {
             gc.setFill(GameConfig.COLOR_1);
         } else if (type == BallType.EXTRA) {
             gc.setFill(Color.DARKBLUE);
+        } else if (type == BallType.EFFECT) {
+            gc.setFill(Color.DARKORANGE);
         }
         gc.fillOval(position.x, position.y, GameConfig.BALL_RADIUS * 2, GameConfig.BALL_RADIUS * 2);
+    }
+
+    public void setEffect(Effects effect) {
+        if (BallType.EFFECT == type) {
+            currentEffect = effect;
+        }
+    }
+
+    public Effects getEffect() {
+        return currentEffect;
     }
 
 }

@@ -2,6 +2,7 @@ package game.core.logic;
 
 import game.GameConfig;
 import game.core.controller.GameController;
+import game.core.entities.ball.Effects;
 import game.core.entities.blocks.Block;
 import game.core.entities.MyVector;
 import game.core.entities.paddle.Paddle;
@@ -16,15 +17,25 @@ public class CollisionHandler {
         for (Ball ball : balls) {
             MyVector pos = ball.getPosition();
 
-            if (!ball.isAttached()) { // paddle kollision nur bei abgestoßenden ball
+            if (!ball.isAttached()) { // paddle collision only if ball was released from paddle
                 boolean withinX = pos.x >= paddle.getX() - paddle.getPaddleWidth() / 2.0 &&
                         pos.x <= paddle.getX() + paddle.getPaddleWidth() / 2.0;
                 boolean withinY = pos.y + GameConfig.BALL_RADIUS >= paddle.getY() - GameConfig.PADDLE_HEIGHT / 2.0 &&
                         pos.y - GameConfig.BALL_RADIUS <= paddle.getY() + GameConfig.PADDLE_HEIGHT;
                 if (withinX && withinY) {
+                    if (ball.isEffect()) {
+                        handleEffect(ball, paddle);
+                    }
                     paddle.collisionWithBall(ball);
                 }
             }
+        }
+    }
+
+    private static void handleEffect(Ball ball, Paddle paddle) {
+        GameController.removeBall(ball);
+        if (ball.getEffect() == Effects.SLOW_PADDLE) {
+            paddle.updateMovingSpeed(0.5);
         }
     }
 

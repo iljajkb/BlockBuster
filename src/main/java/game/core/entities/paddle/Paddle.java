@@ -41,11 +41,11 @@ public class Paddle {
         return paddleWidth;
     }
 
-    protected void updateMovingSpeed(double percentage) {
+    public void updateMovingSpeed(double percentage) {
         movingSpeed = (int) (movingSpeed * percentage);
     }
 
-    protected void updatePaddleWidth(int newWidth) {
+    public void updatePaddleWidth(int newWidth) {
         paddleWidth = newWidth;
     }
 

@@ -36,6 +36,7 @@ public class GameController {
     private long lastNs = 0;
 
     private static final List<Ball> balls = new ArrayList<>();
+    private static final List<Ball> ballsToAdd = new ArrayList<>();
 
     private boolean paused = false;
     private boolean gameStarted = false;
@@ -103,7 +104,7 @@ public class GameController {
                         drawCenteredText(gc, "PAUSED\nPRESS ESC TO CONTINUE", GameConfig.FRAME_HEIGHT / 2.0, 20);
                         return;
                     }
-                    // Game Over
+
                     if (gameOver) {
                         renderGameOver(gc);
                         if (p1.getScore() > highscore) {
@@ -116,27 +117,19 @@ public class GameController {
                     double dt = (now - lastNs) / 1_000_000_000.0; // seconds
                     lastNs = now;
 
-                    // optional: clamp to avoid spikes after stalls
                     if (dt > 0.25) dt = 0.25;
 
                     // physics substeps for stable collisions
                     final double STEP = 1.0 / 120.0; // 120 Hz
                     while (dt > 0) {
                         double use = Math.min(dt, STEP);
-                        updatePhysics(use); // move ALL balls here, handle collisions
+                        updatePhysics(use); // move all balls here, handle collisions
                         if (!paused && gameStarted && !gameOver) {
                             if (moveLeftPressed) paddle.moveLeft();
                             if (moveRightPressed) paddle.moveRight();
                         }
                         dt -= use;
                     }
-
-//                    ball.move(dt);
-//
-//                    // ball.move();
-//                    CollisionHandler.checkForPaddleCollision(balls, paddle);
-//
-//                    CollisionHandler.checkEdgeCollision(balls, p1, paddle);
 
                     // --- Follow paddle for attached main ball(s) BEFORE rendering ---
                     for (Ball b : balls) {
@@ -158,6 +151,9 @@ public class GameController {
                     for (Ball b : balls) {
                         b.render(gc);
                     }
+
+                    balls.addAll(ballsToAdd);
+                    ballsToAdd.clear();
                 }
             }
         }.start();
@@ -184,7 +180,7 @@ public class GameController {
         CollisionHandler.checkBlockCollision(balls, blocks, p1);
     }
 
-    // Hilfsfunktion für zentrierten Text (GPT 5 Kreation)
+    // help funtion for centered text (with gpt 5)
     private void drawCenteredText(GraphicsContext gc, String text, double y, double fontSize) {
         gc.setFont(new Font(fontSize));
         javafx.scene.text.Text helper = new javafx.scene.text.Text(text);
@@ -195,7 +191,6 @@ public class GameController {
     }
 
     private void renderGameOver(GraphicsContext gc) {
-
         gc.setFill(Color.DARKRED);
         drawCenteredText(gc, "GAME OVER", GameConfig.FRAME_HEIGHT / 2.0, 40);
         gc.setFill(Color.WHITE);
@@ -204,10 +199,15 @@ public class GameController {
         drawCenteredText(gc, "Press space to play again", GameConfig.FRAME_HEIGHT / 2.0 + 90, 20);
     }
 
+    public void renderEffectText(GraphicsContext gc, Ball ball) throws InterruptedException {
+        gc.setFill(Color.DARKRED);
+        drawCenteredText(gc, "GAME OVER", GameConfig.FRAME_HEIGHT / 2.0, 40);
+    }
+
     private void resetGame() {
-        p1.reset(); // Score, Leben zurücksetzen
-        ball.reset(paddle); // Startposition & Geschwindigkeit
-        blocks = BlockGrid.renderBlockGrid(gc, 6, 5); // alte Blöcke ersetzen
+        p1.reset();
+        ball.reset(paddle);
+        blocks = BlockGrid.renderBlockGrid(gc, 6, 5);
         gameOver = false;
         gameStarted = true;
         paused = false;
@@ -215,7 +215,8 @@ public class GameController {
     }
 
     public static void addBall(Ball b) {
-        balls.add(b);
+        // safer: we do not add to main list balls
+        ballsToAdd.add(b);
     }
 
     public static void removeBall(Ball b) {
