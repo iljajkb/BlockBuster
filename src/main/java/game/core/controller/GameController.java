@@ -33,8 +33,6 @@ public class GameController {
     private boolean moveLeftPressed = false;
     private boolean moveRightPressed = false;
 
-    private int initalWidth, initalHeight = 6;
-
     private long lastNs = 0;
 
     private final List<Ball> balls = new ArrayList<>();
@@ -50,7 +48,9 @@ public class GameController {
 
     private final EffectController effectController;
 
-    private RenderUIController uiController;
+    private final RenderUIController uiController;
+
+    private final LevelController levelController;
 
     public GameController(GraphicsContext gc, Canvas canvas, int frameHeight) {
         this.gc = gc;
@@ -62,6 +62,7 @@ public class GameController {
         this.p1 = new Player();
         this.effectController = new EffectController(paddle, ball);
         this.uiController = new RenderUIController(gc, effectController, p1);
+        this.levelController = new LevelController();
     }
 
     public void handleKeyPress(KeyEvent e) {
@@ -88,7 +89,7 @@ public class GameController {
 
     public void startGameLoop() {
         highscore = 0;
-        blocks = BlockGrid.renderBlockGrid(gc, 6,5);
+        blocks = levelController.initFirstLevel(gc);
         new AnimationTimer() {
             @Override
             public void handle(long now) {
@@ -98,7 +99,12 @@ public class GameController {
 
                 // --- Level cleared ---
                 if (BlockGrid.allBlocksDestroyed(blocks)) {
-                    renderNewLevel();
+                    blocks = levelController.renderNewLevel(gc, ball, paddle);
+
+                    removeAllExtraBalls();
+                    ballsToAdd.clear();
+                    ballsToRemove.clear();
+
                     lastNs = 0; // prevent dt spike
                 }
 
@@ -172,18 +178,6 @@ public class GameController {
         }.start();
     }
 
-    private void renderNewLevel() {
-        ball.reset(paddle);
-        if (initalHeight < 8 && initalWidth < 8) {
-            initalHeight++;
-            initalWidth++;
-        }
-        removeAllExtraBalls();
-        blocks = BlockGrid.renderBlockGrid(gc, initalWidth,initalHeight); // vorläufig
-        double incrementedSpeed = ball.getSpeed() * 1.05;
-        ball.setSpeed(incrementedSpeed);
-    }
-
     private void updatePhysics(double dt) {
         balls.addAll(ballsToAdd);
         ballsToAdd.clear();
@@ -205,12 +199,10 @@ public class GameController {
         particles.removeIf(Particle::isDead);
     }
 
-
-
     private void resetGame() {
         p1.reset();
         ball.reset(paddle);
-        blocks = BlockGrid.renderBlockGrid(gc, 6, 5);
+        blocks = levelController.initFirstLevel(gc);
         gameOver = false;
         gameStarted = true;
         paused = false;
