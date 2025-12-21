@@ -35,8 +35,9 @@ public class GameController {
 
     private long lastNs = 0;
 
-    private static final List<Ball> balls = new ArrayList<>();
-    private static final List<Ball> ballsToAdd = new ArrayList<>();
+    private final List<Ball> balls = new ArrayList<>();
+    private final List<Ball> ballsToAdd = new ArrayList<>();
+    private final List<Ball> ballsToRemove = new ArrayList<>();
 
     private boolean paused = false;
     private boolean gameStarted = false;
@@ -154,9 +155,6 @@ public class GameController {
                         b.render(gc);
                     }
 
-                    balls.addAll(ballsToAdd);
-                    ballsToAdd.clear();
-
                     renderEffectText(gc);
                     effectController.update();
                 }
@@ -177,12 +175,18 @@ public class GameController {
     }
 
     private void updatePhysics(double dt) {
+        balls.addAll(ballsToAdd);
+        ballsToAdd.clear();
+
         for (Ball b : balls) {
             if (!b.isAttached()) b.move(dt); // position += velocity(px/s) * dt
         }
-        CollisionHandler.checkForPaddleCollision(balls, paddle, effectController);
-        CollisionHandler.checkEdgeCollision(balls, p1, paddle, frameHeight);
-        CollisionHandler.checkBlockCollision(balls, blocks, p1);
+        CollisionHandler.checkForPaddleCollision(balls, paddle, effectController, ballsToRemove);
+        CollisionHandler.checkEdgeCollision(balls, p1, paddle, frameHeight, this, ballsToRemove);
+        CollisionHandler.checkBlockCollision(balls, blocks, p1, ballsToAdd);
+
+        balls.removeAll(ballsToRemove);
+        ballsToRemove.clear();
     }
 
     // help funtion for centered text (with gpt 5)
@@ -229,17 +233,14 @@ public class GameController {
         removeAllExtraBalls();
     }
 
-    public static void addBall(Ball b) {
+    public void addBall(Ball b) {
         // safer: we do not add to main list balls
         ballsToAdd.add(b);
     }
 
-    public static void removeBall(Ball b) {
-        balls.remove(b);
-    }
-
-    public static void removeAllExtraBalls() {
-        balls.removeIf(b -> !b.isMain());
+    public void removeAllExtraBalls() {
+        List<Ball> allExtraBalls = balls.stream().filter(b -> !b.isMain()).toList();
+        ballsToRemove.addAll(allExtraBalls);
     }
 
 }

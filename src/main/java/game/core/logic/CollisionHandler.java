@@ -11,15 +11,12 @@ import game.core.entities.Player;
 import game.core.entities.ball.Ball;
 
 import java.util.List;
+import java.util.Optional;
 
 public class CollisionHandler {
 
-    public static void checkForPaddleCollision(List<Ball> balls, Paddle paddle, EffectController effectController) {
-        Ball mainBall = null;
+    public static void checkForPaddleCollision(List<Ball> balls, Paddle paddle, EffectController effectController, List<Ball> ballsToRemove) {
         for (Ball ball : balls) {
-            if (ball.isMain()) {
-                mainBall = ball;
-            }
             MyVector pos = ball.getPosition();
 
             if (!ball.isAttached()) { // paddle collision only if ball was released from paddle
@@ -29,7 +26,7 @@ public class CollisionHandler {
                         pos.y - GameConfig.BALL_RADIUS <= paddle.getY() + GameConfig.PADDLE_HEIGHT;
                 if (withinX && withinY) {
                     if (ball.isEffect()) {
-                        handleEffectCollision(ball, effectController);
+                        handleEffectCollision(ball, effectController, ballsToRemove);
                     }
                     paddle.collisionWithBall(ball);
                 }
@@ -37,14 +34,14 @@ public class CollisionHandler {
         }
     }
 
-    public static void handleEffectCollision(Ball effectBall, EffectController effectController) {
+    public static void handleEffectCollision(Ball effectBall, EffectController effectController, List<Ball> ballsToRemove) {
         if (effectBall.isEffect()) {
             effectController.triggerEffect(effectBall.getEffect());
-            GameController.removeBall(effectBall);
+            ballsToRemove.add(effectBall);
         }
     }
 
-    public static void checkEdgeCollision(List<Ball> balls, Player player, Paddle paddle, int frameHeight) {
+    public static void checkEdgeCollision(List<Ball> balls, Player player, Paddle paddle, int frameHeight, GameController controller, List<Ball> ballsToRemove) {
         for (Ball ball : balls) {
             MyVector pos = ball.getPosition();
             MyVector vel = ball.getVelocity();
@@ -64,10 +61,10 @@ public class CollisionHandler {
                 if (ball.isMain()) {
                     player.loseLife();
                     ball.reset(paddle);
-                    GameController.removeAllExtraBalls();
+                    controller.removeAllExtraBalls();
                     return;
                 } else if (ball.getType() == Ball.BallType.EXTRA) {
-                    GameController.removeBall(ball);
+                    ballsToRemove.add(ball);
                 }
             }
             ball.setVelocity(vel);
@@ -78,7 +75,7 @@ public class CollisionHandler {
         if (block.isDestroyed()) {
             return false;
         }
-
+        // effect balls should not collide, just drop down
         if (ball.isEffect()) {
             return false;
         }
@@ -95,12 +92,14 @@ public class CollisionHandler {
 
     }
 
-    public static void checkBlockCollision(List<Ball> balls, Block[][] blocks, Player player) {
+    public static void checkBlockCollision(List<Ball> balls, Block[][] blocks, Player player, List<Ball> ballsToAdd) {
         for (Block[] row : blocks) {
             for (Block block : row) {
                 for (Ball ball : balls) {
                     if (!block.isDestroyed() && ballIsCollidingWithBlock(ball, block)) {
-                        block.hit(ball, player);
+
+                        Optional<Ball> ballOptional = block.hit(ball, player);
+                        ballOptional.ifPresent(ballsToAdd::add); // adds extra or effect balls when hit
 
                         MyVector ballPos = ball.getPosition();
                         MyVector blockPos = block.getPosition();

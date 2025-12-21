@@ -9,6 +9,8 @@ import game.core.entities.Effects;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
+import java.util.Optional;
+
 public class EffectBlock extends Block {
     private final Effects effect;
 
@@ -18,13 +20,13 @@ public class EffectBlock extends Block {
     }
 
     @Override
-    public void hit(Ball ball, Player player) {
+    public Optional<Ball> hit(Ball ball, Player player) {
         hp = Math.max(0, hp - ball.getCurrentDamage());
         player.increaseScore(ball.getCurrentDamage());
         MyVector dir = new MyVector(0, 1).normalize();
         Ball effectBall = Ball.createEffectBall(this.getPosition(), dir.scale(GameConfig.INITIAL_BALL_SPEED * 0.5), effect);
         System.out.println("EFFECT BALL CREATED");
-        GameController.addBall(effectBall);
+        return Optional.of(effectBall);
     }
 
     @Override

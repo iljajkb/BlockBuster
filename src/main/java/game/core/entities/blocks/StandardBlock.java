@@ -6,6 +6,8 @@ import game.core.entities.Player;
 import game.core.entities.ball.Ball;
 import javafx.scene.canvas.GraphicsContext;
 
+import java.util.Optional;
+
 public class StandardBlock extends Block {
 
     public StandardBlock() {
@@ -13,10 +15,11 @@ public class StandardBlock extends Block {
     }
 
     @Override
-    public void hit(Ball ball, Player player) {
+    public Optional<Ball> hit(Ball ball, Player player) {
         // clamp to 0 so we don't go negative
         hp = Math.max(0, hp - ball.getCurrentDamage());
         player.increaseScore(ball.getCurrentDamage());
+        return Optional.empty();
     }
 
     @Override

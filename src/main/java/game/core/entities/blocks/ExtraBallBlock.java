@@ -8,18 +8,20 @@ import game.core.entities.ball.Ball;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
+import java.util.Optional;
+
 public class ExtraBallBlock extends Block {
     public ExtraBallBlock() {
         super(50);
     }
 
     @Override
-    public void hit(Ball ball, Player player) {
+    public Optional<Ball> hit(Ball ball, Player player) {
         hp = Math.max(0, hp - ball.getCurrentDamage());
         player.increaseScore(ball.getCurrentDamage());
         MyVector dir = new MyVector(Math.random(), -1).normalize(); // direction only
         Ball additionalBall = Ball.createExtraBall(this.getPosition(), dir.scale(GameConfig.INITIAL_BALL_SPEED - 50.0)); // extra ball little slower
-        GameController.addBall(additionalBall);
+        return Optional.of(additionalBall);
     }
 
     @Override

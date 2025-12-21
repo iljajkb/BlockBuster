@@ -5,6 +5,7 @@ import game.core.entities.ball.Ball;
 import game.core.entities.paddle.Paddle;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -36,10 +37,12 @@ public class EffectController {
     }
 
     public void update() {
-        for (ActiveEffect active : activeEffects) {
+        Iterator<ActiveEffect> it = activeEffects.iterator();
+        while (it.hasNext()) {
+            ActiveEffect active = it.next();
             if (active.isExpired()) {
                 applyEffect(active.getActiveEffect(), false);
-                activeEffects.remove(active);
+                it.remove();
             }
         }
     }

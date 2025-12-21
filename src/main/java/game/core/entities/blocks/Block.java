@@ -5,6 +5,8 @@ import game.core.entities.Player;
 import game.core.entities.ball.Ball;
 import javafx.scene.canvas.GraphicsContext;
 
+import java.util.Optional;
+
 public abstract class Block {
     private MyVector pos;
     protected int hp;
@@ -13,7 +15,7 @@ public abstract class Block {
         this.hp = hp;
     }
 
-    public abstract void hit(Ball ball, Player player);
+    public abstract Optional<Ball> hit(Ball ball, Player player);
     public boolean isDestroyed() {
         return hp <= 0;
     }
