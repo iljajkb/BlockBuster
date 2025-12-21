@@ -1,22 +1,16 @@
 package game.core.entities.blocks;
 
 import game.GameConfig;
-import game.core.controller.GameController;
 import game.core.entities.MyVector;
 import game.core.entities.Player;
 import game.core.entities.ball.Ball;
 import game.core.entities.Effects;
-import javafx.scene.SnapshotParameters;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
 import java.util.List;
 import java.util.Optional;
-
-import static game.GameConfig.*;
 
 public class EffectBlock extends Block {
     private final Effects effect;

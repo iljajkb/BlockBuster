@@ -8,6 +8,7 @@ import game.core.entities.blocks.BlockGrid;
 import game.core.entities.blocks.Particle;
 import game.core.entities.paddle.Paddle;
 import game.core.logic.CollisionHandler;
+import game.ui.RenderUIController;
 import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -32,7 +33,7 @@ public class GameController {
     private boolean moveLeftPressed = false;
     private boolean moveRightPressed = false;
 
-    private int initalWidth, initalHeight = 5;
+    private int initalWidth, initalHeight = 6;
 
     private long lastNs = 0;
 
@@ -49,6 +50,8 @@ public class GameController {
 
     private final EffectController effectController;
 
+    private RenderUIController uiController;
+
     public GameController(GraphicsContext gc, Canvas canvas, int frameHeight) {
         this.gc = gc;
         this.canvas = canvas;
@@ -58,6 +61,7 @@ public class GameController {
         addBall(this.ball);
         this.p1 = new Player();
         this.effectController = new EffectController(paddle, ball);
+        this.uiController = new RenderUIController(gc, effectController, p1);
     }
 
     public void handleKeyPress(KeyEvent e) {
@@ -90,7 +94,6 @@ public class GameController {
             public void handle(long now) {
 
                 gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-
                 gameOver = p1.checkForGameOver();
 
                 // --- Level cleared ---
@@ -102,18 +105,18 @@ public class GameController {
                 if (!gameStarted && !p1.checkForGameOver()) {
                     gc.setFill(Color.WHITE);
                     gc.setFont(new Font(50));
-                    drawCenteredText(gc, "Press SPACE to start the Game", GameConfig.FRAME_HEIGHT / 2.0, 40);
+                    uiController.drawCenteredText(gc, "Press SPACE to start the Game", GameConfig.FRAME_HEIGHT / 2.0, 40);
                 }
                 if (gameStarted) {
 
                     if (paused) {
                         gc.setFill(Color.WHITE);
-                        drawCenteredText(gc, "PAUSED\nPRESS ESC TO CONTINUE", GameConfig.FRAME_HEIGHT / 2.0, 20);
+                        uiController.drawCenteredText(gc, "PAUSED\nPRESS ESC TO CONTINUE", GameConfig.FRAME_HEIGHT / 2.0, 20);
                         return;
                     }
 
                     if (gameOver) {
-                        renderGameOver(gc);
+                        uiController.renderGameOver(gc);
                         if (p1.getScore() > highscore) {
                             highscore = p1.getScore();
                         }
@@ -162,8 +165,7 @@ public class GameController {
                     for (Ball b : balls) {
                         b.render(gc);
                     }
-
-                    renderEffectText(gc);
+                    uiController.renderEffectText(gc);
                     effectController.update();
                 }
             }
@@ -203,39 +205,7 @@ public class GameController {
         particles.removeIf(Particle::isDead);
     }
 
-    // help funtion for centered text (with gpt 5)
-    private void drawCenteredText(GraphicsContext gc, String text, double y, double fontSize) {
-        gc.setFont(new Font(fontSize));
-        javafx.scene.text.Text helper = new javafx.scene.text.Text(text);
-        helper.setFont(gc.getFont());
-        double textWidth = helper.getLayoutBounds().getWidth();
-        double x = (GameConfig.FRAME_WIDTH - textWidth) / 2;
-        gc.fillText(text, x, y);
-    }
 
-    private void renderGameOver(GraphicsContext gc) {
-        gc.setFill(Color.DARKRED);
-        drawCenteredText(gc, "GAME OVER", GameConfig.FRAME_HEIGHT / 2.0, 40);
-        gc.setFill(Color.WHITE);
-        drawCenteredText(gc, "SCORE: " + p1.getScore(), GameConfig.FRAME_HEIGHT / 2.0 + 30, 20);
-        drawCenteredText(gc, "HIGHSCORE: " + highscore, GameConfig.FRAME_HEIGHT / 2.0 + 60, 20);
-        drawCenteredText(gc, "Press space to play again", GameConfig.FRAME_HEIGHT / 2.0 + 90, 20);
-    }
-
-    public void renderEffectText(GraphicsContext gc) {
-        gc.setFill(Color.RED);
-        gc.setFont(new Font(20));
-        List<ActiveEffect> list = effectController.getActiveEffects();
-        if (list.isEmpty()) {
-            return;
-        }
-        StringBuilder effectText = new StringBuilder("EFFECT ACTIVATED:\n");
-        for (ActiveEffect value : list) {
-            effectText.append(value.getActiveEffect().name());
-            effectText.append("\n");
-        }
-        gc.fillText(effectText.toString(), 30 , 120);
-    }
 
     private void resetGame() {
         p1.reset();
