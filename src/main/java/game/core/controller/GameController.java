@@ -160,7 +160,7 @@ public class GameController {
                     ballsToAdd.clear();
 
                     renderEffectText(gc);
-
+                    effectController.update();
                 }
             }
         }.start();
