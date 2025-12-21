@@ -43,6 +43,8 @@ public class GameController {
     private boolean gameOver = false;
 
     private static String activeEffect = null;
+    private List<ActiveEffect> activeEffects = new ArrayList<>();
+    private final EffectController effectController;
 
     public GameController(GraphicsContext gc, Canvas canvas, int frameHeight) {
         this.gc = gc;
@@ -52,6 +54,7 @@ public class GameController {
         this.ball = Ball.createMainBall(paddle);
         addBall(this.ball);
         this.p1 = new Player();
+        this.effectController = new EffectController(paddle, ball);
     }
 
     public void handleKeyPress(KeyEvent e) {
@@ -156,9 +159,8 @@ public class GameController {
                     balls.addAll(ballsToAdd);
                     ballsToAdd.clear();
 
-                    if (activeEffect != null) {
-                        renderEffectText(gc, activeEffect);
-                    }
+                    renderEffectText(gc);
+
                 }
             }
         }.start();
@@ -180,7 +182,7 @@ public class GameController {
         for (Ball b : balls) {
             if (!b.isAttached()) b.move(dt); // position += velocity(px/s) * dt
         }
-        CollisionHandler.checkForPaddleCollision(balls, paddle);
+        CollisionHandler.checkForPaddleCollision(balls, paddle, effectController);
         CollisionHandler.checkEdgeCollision(balls, p1, paddle, frameHeight);
         CollisionHandler.checkBlockCollision(balls, blocks, p1);
     }
@@ -204,15 +206,19 @@ public class GameController {
         drawCenteredText(gc, "Press space to play again", GameConfig.FRAME_HEIGHT / 2.0 + 90, 20);
     }
 
-    // von außen aufgerufen um Flag zu setzen
-    public static void triggerEffect(String effect) {
-        activeEffect = effect;
-    }
-
-    public void renderEffectText(GraphicsContext gc, String effect) {
+    public void renderEffectText(GraphicsContext gc) {
         gc.setFill(Color.RED);
         gc.setFont(new Font(20));
-        gc.fillText("EFFECT ACTIVATED:\n" + effect, 30, GameConfig.FRAME_HEIGHT / 2.0 - 300);
+        List<ActiveEffect> list = effectController.getActiveEffects();
+        if (list.isEmpty()) {
+            return;
+        }
+        StringBuilder effectText = new StringBuilder("EFFECT ACTIVATED:\n");
+        for (ActiveEffect value : list) {
+            effectText.append(value.getActiveEffect().name());
+            effectText.append("\n");
+        }
+        gc.fillText(effectText.toString(), 30 , 120);
     }
 
     private void resetGame() {

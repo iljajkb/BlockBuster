@@ -14,7 +14,7 @@ import java.util.List;
 
 public class CollisionHandler {
 
-    public static void checkForPaddleCollision(List<Ball> balls, Paddle paddle) {
+    public static void checkForPaddleCollision(List<Ball> balls, Paddle paddle, EffectController effectController) {
         Ball mainBall = null;
         for (Ball ball : balls) {
             if (ball.isMain()) {
@@ -29,7 +29,7 @@ public class CollisionHandler {
                         pos.y - GameConfig.BALL_RADIUS <= paddle.getY() + GameConfig.PADDLE_HEIGHT;
                 if (withinX && withinY) {
                     if (ball.isEffect()) {
-                        handleEffect(ball, paddle, mainBall);
+                        handleEffectCollision(ball, effectController);
                     }
                     paddle.collisionWithBall(ball);
                 }
@@ -37,10 +37,17 @@ public class CollisionHandler {
         }
     }
 
-    private static void handleEffect(Ball effectBall, Paddle paddle, Ball mainBall) {
-        GameController.removeBall(effectBall);
-        EffectController.handleEffects(effectBall, paddle, mainBall);
+    public static void handleEffectCollision(Ball effectBall, EffectController effectController) {
+        if (effectBall.isEffect()) {
+            effectController.triggerEffect(effectBall.getEffect());
+            GameController.removeBall(effectBall);
+        }
     }
+
+//    private static void handleEffect(Ball effectBall, Paddle paddle, Ball mainBall) {
+//        GameController.removeBall(effectBall);
+//        EffectController.handleEffects(effectBall, paddle, mainBall);
+//    }
 
     public static void checkEdgeCollision(List<Ball> balls, Player player, Paddle paddle, int frameHeight) {
         for (Ball ball : balls) {
