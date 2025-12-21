@@ -44,11 +44,6 @@ public class CollisionHandler {
         }
     }
 
-//    private static void handleEffect(Ball effectBall, Paddle paddle, Ball mainBall) {
-//        GameController.removeBall(effectBall);
-//        EffectController.handleEffects(effectBall, paddle, mainBall);
-//    }
-
     public static void checkEdgeCollision(List<Ball> balls, Player player, Paddle paddle, int frameHeight) {
         for (Ball ball : balls) {
             MyVector pos = ball.getPosition();
@@ -81,6 +76,10 @@ public class CollisionHandler {
 
     private static boolean ballIsCollidingWithBlock(Ball ball, Block block) {
         if (block.isDestroyed()) {
+            return false;
+        }
+
+        if (ball.isEffect()) {
             return false;
         }
 

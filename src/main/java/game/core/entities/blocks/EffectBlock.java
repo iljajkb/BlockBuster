@@ -21,7 +21,7 @@ public class EffectBlock extends Block {
     public void hit(Ball ball, Player player) {
         hp = Math.max(0, hp - ball.getCurrentDamage());
         player.increaseScore(ball.getCurrentDamage());
-        MyVector dir = new MyVector(Math.random(), 1).normalize();
+        MyVector dir = new MyVector(0, 1).normalize();
         Ball effectBall = Ball.createEffectBall(this.getPosition(), dir.scale(GameConfig.INITIAL_BALL_SPEED * 0.5), effect);
         System.out.println("EFFECT BALL CREATED");
         GameController.addBall(effectBall);

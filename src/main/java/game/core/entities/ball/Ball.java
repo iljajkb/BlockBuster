@@ -125,6 +125,8 @@ public class Ball {
             gc.setFill(Color.DARKBLUE);
         } else if (type == BallType.EFFECT) {
             gc.setFill(Color.DARKORANGE);
+            gc.fillRect(position.x, position.y, GameConfig.BALL_RADIUS * 2, GameConfig.BALL_RADIUS * 2);
+            return;
         }
         gc.fillOval(position.x, position.y, GameConfig.BALL_RADIUS * 2, GameConfig.BALL_RADIUS * 2);
     }
