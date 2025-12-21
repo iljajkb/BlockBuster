@@ -5,6 +5,7 @@ import game.core.entities.Player;
 import game.core.entities.ball.Ball;
 import javafx.scene.canvas.GraphicsContext;
 
+import java.util.List;
 import java.util.Optional;
 
 public abstract class Block {
@@ -15,7 +16,7 @@ public abstract class Block {
         this.hp = hp;
     }
 
-    public abstract Optional<Ball> hit(Ball ball, Player player);
+    public abstract Optional<Ball> hit(Ball ball, Player player, List<Particle> particlesToAdd);
     public boolean isDestroyed() {
         return hp <= 0;
     }

@@ -6,6 +6,7 @@ import game.core.entities.EffectController;
 import game.core.entities.Effects;
 import game.core.entities.blocks.Block;
 import game.core.entities.MyVector;
+import game.core.entities.blocks.Particle;
 import game.core.entities.paddle.Paddle;
 import game.core.entities.Player;
 import game.core.entities.ball.Ball;
@@ -92,13 +93,13 @@ public class CollisionHandler {
 
     }
 
-    public static void checkBlockCollision(List<Ball> balls, Block[][] blocks, Player player, List<Ball> ballsToAdd) {
+    public static void checkBlockCollision(List<Ball> balls, Block[][] blocks, Player player, List<Ball> ballsToAdd, List<Particle> particlesToAdd) {
         for (Block[] row : blocks) {
             for (Block block : row) {
                 for (Ball ball : balls) {
                     if (!block.isDestroyed() && ballIsCollidingWithBlock(ball, block)) {
 
-                        Optional<Ball> ballOptional = block.hit(ball, player);
+                        Optional<Ball> ballOptional = block.hit(ball, player, particlesToAdd);
                         ballOptional.ifPresent(ballsToAdd::add); // adds extra or effect balls when hit
 
                         MyVector ballPos = ball.getPosition();

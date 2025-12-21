@@ -13,28 +13,35 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
+import java.util.List;
 import java.util.Optional;
 
-import static game.GameConfig.BLOCK_HEIGHT;
-import static game.GameConfig.BLOCK_WIDTH;
+import static game.GameConfig.*;
 
 public class EffectBlock extends Block {
     private final Effects effect;
     private static Image blockImage;
+    private final static Color COLOR = Color.ORANGE;
 
     public EffectBlock(Effects effect) {
         super(50);
         this.effect = effect;
         if (blockImage == null) {
-            CreateBlockImage creator = new CreateBlockImage(Color.ORANGE);
+            CreateBlockImage creator = new CreateBlockImage(COLOR);
             blockImage = creator.createGlowCache();
         }
     }
 
     @Override
-    public Optional<Ball> hit(Ball ball, Player player) {
+    public Optional<Ball> hit(Ball ball, Player player, List<Particle> particlesToAdd) {
         hp = Math.max(0, hp - ball.getCurrentDamage());
         player.increaseScore(ball.getCurrentDamage());
+
+        MyVector pos = this.getPosition();
+        if (this.hp <= 0) {
+            Particle.animateMultipleParticles(particlesToAdd, pos.x, pos.y, COLOR);
+        }
+
         MyVector dir = new MyVector(0, 1).normalize();
         Ball effectBall = Ball.createEffectBall(this.getPosition(), dir.scale(GameConfig.INITIAL_BALL_SPEED * 0.5), effect);
         return Optional.of(effectBall);

@@ -10,25 +10,33 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
+import java.util.List;
 import java.util.Optional;
 
-import static game.GameConfig.COLOR_1;
+import static game.GameConfig.*;
 
 public class ExtraBallBlock extends Block {
     private static Image blockImage;
+    private final static Color COLOR = Color.CYAN;
 
     public ExtraBallBlock() {
         super(50);
         if (blockImage == null) {
-            CreateBlockImage creator = new CreateBlockImage(Color.CYAN);
+            CreateBlockImage creator = new CreateBlockImage(COLOR);
             blockImage = creator.createGlowCache();
         }
     }
 
     @Override
-    public Optional<Ball> hit(Ball ball, Player player) {
+    public Optional<Ball> hit(Ball ball, Player player, List<Particle> particlesToAdd) {
         hp = Math.max(0, hp - ball.getCurrentDamage());
         player.increaseScore(ball.getCurrentDamage());
+
+        MyVector pos = this.getPosition();
+        if (this.hp <= 0) {
+            Particle.animateMultipleParticles(particlesToAdd, pos.x, pos.y, COLOR);
+        }
+
         MyVector dir = new MyVector(Math.random(), -1).normalize(); // direction only
         Ball additionalBall = Ball.createExtraBall(this.getPosition(), dir.scale(GameConfig.INITIAL_BALL_SPEED - 50.0)); // extra ball little slower
         return Optional.of(additionalBall);

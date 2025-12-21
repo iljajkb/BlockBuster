@@ -5,6 +5,7 @@ import game.core.entities.*;
 import game.core.entities.ball.Ball;
 import game.core.entities.blocks.Block;
 import game.core.entities.blocks.BlockGrid;
+import game.core.entities.blocks.Particle;
 import game.core.entities.paddle.Paddle;
 import game.core.logic.CollisionHandler;
 import javafx.animation.AnimationTimer;
@@ -38,6 +39,9 @@ public class GameController {
     private final List<Ball> balls = new ArrayList<>();
     private final List<Ball> ballsToAdd = new ArrayList<>();
     private final List<Ball> ballsToRemove = new ArrayList<>();
+
+    private final List<Particle> particles = new ArrayList<>();
+    private final List<Particle> particlesToAdd = new ArrayList<>();
 
     private boolean paused = false;
     private boolean gameStarted = false;
@@ -148,6 +152,10 @@ public class GameController {
                         }
                     }
 
+                    for (Particle p : particles) {
+                        p.render(gc);
+                    }
+
                     p1.renderLives(gc);
                     p1.renderScore(gc);
                     paddle.render(gc);
@@ -183,10 +191,16 @@ public class GameController {
         }
         CollisionHandler.checkForPaddleCollision(balls, paddle, effectController, ballsToRemove);
         CollisionHandler.checkEdgeCollision(balls, p1, paddle, frameHeight, this, ballsToRemove);
-        CollisionHandler.checkBlockCollision(balls, blocks, p1, ballsToAdd);
+        CollisionHandler.checkBlockCollision(balls, blocks, p1, ballsToAdd, particles);
 
         balls.removeAll(ballsToRemove);
         ballsToRemove.clear();
+
+        particles.addAll(particlesToAdd);
+        particlesToAdd.clear();
+
+        particles.forEach(p -> p.update(dt));
+        particles.removeIf(Particle::isDead);
     }
 
     // help funtion for centered text (with gpt 5)
