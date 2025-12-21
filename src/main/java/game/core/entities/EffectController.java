@@ -35,12 +35,6 @@ public class EffectController {
         activeEffects.add(new ActiveEffect(effectName, 10));
     }
 
-    public void handleCollision(Ball effectBall) {
-        if (effectBall.isEffect()) {
-            triggerEffect(effectBall.getEffect());
-        }
-    }
-
     public void update() {
         for (ActiveEffect active : activeEffects) {
             if (active.isExpired()) {
@@ -76,36 +70,5 @@ public class EffectController {
             case SLOW_PADDLE, SLOW_BALL -> 2.0;
             case FAST_PADDLE, FAST_BALL -> 1.0 / 1.5;
         };
-    }
-
-
-    // --- deprecated ---
-
-    @Deprecated
-    public void handleEffects(Ball effectBall, Paddle paddle, Ball mainBall) {
-        if (!effectBall.isEffect()) {
-            return;
-        }
-
-        Effects ballEffect = effectBall.getEffect();
-
-        switch(ballEffect) {
-            case SLOW_PADDLE -> {
-                paddle.updateMovingSpeed(0.5);
-                triggerEffect(Effects.SLOW_PADDLE);
-            }
-            case FAST_PADDLE -> {
-                paddle.updateMovingSpeed(1.5);
-                triggerEffect(Effects.FAST_PADDLE);
-            }
-            case FAST_BALL -> {
-                mainBall.updateSpeed(1.5);
-                triggerEffect(Effects.FAST_BALL);
-            }
-            case SLOW_BALL -> {
-                mainBall.updateSpeed(0.5);
-                triggerEffect(Effects.SLOW_BALL);
-            }
-        }
     }
 }

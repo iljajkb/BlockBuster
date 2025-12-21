@@ -17,7 +17,6 @@ public class StandardBlock extends Block {
         // clamp to 0 so we don't go negative
         hp = Math.max(0, hp - ball.getCurrentDamage());
         player.increaseScore(ball.getCurrentDamage());
-        // hp = hp - ball.getCurrentDamage();
     }
 
     @Override

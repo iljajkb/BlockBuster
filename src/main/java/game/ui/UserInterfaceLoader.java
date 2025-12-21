@@ -45,12 +45,10 @@ public class UserInterfaceLoader extends Application {
         }
         Scene scene = new Scene(root, GameConfig.FRAME_WIDTH, frameHeight, GameConfig.BACKGROUND_COLOR);
 
-        // Canvas + GC
         Canvas canvas = new Canvas(GameConfig.FRAME_WIDTH, frameHeight);
         GraphicsContext gc = canvas.getGraphicsContext2D();
         root.getChildren().add(canvas);
 
-        // Icon (assert kann in Produktion deaktiviert sein -> lieber if)
         URL url = getClass().getResource("/icon.png");
         if (url != null) {
             Image icon = new Image(url.toString());

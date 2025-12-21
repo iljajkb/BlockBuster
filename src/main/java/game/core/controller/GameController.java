@@ -42,8 +42,6 @@ public class GameController {
     private boolean gameStarted = false;
     private boolean gameOver = false;
 
-    private static String activeEffect = null;
-    private List<ActiveEffect> activeEffects = new ArrayList<>();
     private final EffectController effectController;
 
     public GameController(GraphicsContext gc, Canvas canvas, int frameHeight) {

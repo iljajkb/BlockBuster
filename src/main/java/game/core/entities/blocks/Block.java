@@ -24,6 +24,4 @@ public abstract class Block {
     public void setPosition(MyVector pos) {
         this.pos = pos;
     }
-
-
 }

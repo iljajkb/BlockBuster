@@ -31,11 +31,8 @@ public class Player {
         double heartSize = 15;
 
         gc.setFill(Color.RED);
-
-        // Herz zeichnen (links + rechts Halbkugel + Dreieck unten)
         gc.fillOval(heartX, heartY, heartSize, heartSize);
 
-        // Text daneben
         gc.setFill(Color.WHITE);
         gc.setFont(new Font(15));
         gc.fillText("x " + lives, heartX + heartSize + 10, heartY + heartSize / 1.5);

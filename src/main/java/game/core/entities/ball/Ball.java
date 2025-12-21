@@ -58,14 +58,9 @@ public class Ball {
     public boolean isMain() { return type == BallType.MAIN; }
     public boolean isEffect() { return type == BallType.EFFECT; }
 
-    // >>> Change move() to time-based:
     public void move(double dt) { // dt in seconds
         position = position.add(velocity.scale(dt));
     }
-
-    // Keep an overload if you need it, but avoid using it in the loop:
-    @Deprecated
-    public void move() { position = position.add(velocity); } // legacy; try not to call it
 
     public void followPaddle(Paddle paddle) {
         if (!attached) return;
@@ -108,14 +103,6 @@ public class Ball {
 
     public int getCurrentDamage() {
         return damage;
-    }
-
-    public Effects getCurrentEffect() {
-        return currentEffect;
-    }
-
-    protected void setDamage(int damage) {
-        this.damage = damage;
     }
 
     public void render(GraphicsContext gc) {

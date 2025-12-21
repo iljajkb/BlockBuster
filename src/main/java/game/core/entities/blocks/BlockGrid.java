@@ -12,7 +12,6 @@ public class BlockGrid {
         int vGap = 15;
         int hGap = 15;
         int margin = 200;
-        int topMargin = 75;
 
         for (int r = 0; r < width; r++) {
             double y = margin + r * (GameConfig.BLOCK_HEIGHT + vGap);
