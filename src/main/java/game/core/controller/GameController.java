@@ -42,6 +42,8 @@ public class GameController {
     private boolean gameStarted = false;
     private boolean gameOver = false;
 
+    private static String activeEffect = null;
+
     public GameController(GraphicsContext gc, Canvas canvas, int frameHeight) {
         this.gc = gc;
         this.canvas = canvas;
@@ -65,7 +67,6 @@ public class GameController {
             case LEFT -> moveLeftPressed = true;
             case RIGHT -> moveRightPressed = true;
         }
-
     }
 
     public void handleKeyRelease(KeyEvent e) {
@@ -154,6 +155,10 @@ public class GameController {
 
                     balls.addAll(ballsToAdd);
                     ballsToAdd.clear();
+
+                    if (activeEffect != null) {
+                        renderEffectText(gc, activeEffect);
+                    }
                 }
             }
         }.start();
@@ -199,9 +204,15 @@ public class GameController {
         drawCenteredText(gc, "Press space to play again", GameConfig.FRAME_HEIGHT / 2.0 + 90, 20);
     }
 
-    public void renderEffectText(GraphicsContext gc, Ball ball) throws InterruptedException {
-        gc.setFill(Color.DARKRED);
-        drawCenteredText(gc, "GAME OVER", GameConfig.FRAME_HEIGHT / 2.0, 40);
+    // von außen aufgerufen um Flag zu setzen
+    public static void triggerEffect(String effect) {
+        activeEffect = effect;
+    }
+
+    public void renderEffectText(GraphicsContext gc, String effect) {
+        gc.setFill(Color.RED);
+        gc.setFont(new Font(20));
+        gc.fillText("EFFECT ACTIVATED:\n" + effect, 30, GameConfig.FRAME_HEIGHT / 2.0 - 300);
     }
 
     private void resetGame() {

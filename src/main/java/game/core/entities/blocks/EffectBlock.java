@@ -5,23 +5,24 @@ import game.core.controller.GameController;
 import game.core.entities.MyVector;
 import game.core.entities.Player;
 import game.core.entities.ball.Ball;
-import game.core.entities.ball.Effects;
-import javafx.geometry.VPos;
+import game.core.entities.Effects;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-import javafx.scene.text.TextAlignment;
 
-public class BadEffectBlock extends Block {
-    public BadEffectBlock() {
+public class EffectBlock extends Block {
+    private final Effects effect;
+
+    public EffectBlock(Effects effect) {
         super(50);
+        this.effect = effect;
     }
 
     @Override
     public void hit(Ball ball, Player player) {
         hp = Math.max(0, hp - ball.getCurrentDamage());
         player.increaseScore(ball.getCurrentDamage());
-        MyVector dir = new MyVector(Math.random(), -1).normalize();
-        Ball effectBall = Ball.createEffectBall(this.getPosition(), dir.scale(GameConfig.INITIAL_BALL_SPEED), Effects.SLOW_PADDLE);
+        MyVector dir = new MyVector(Math.random(), 1).normalize();
+        Ball effectBall = Ball.createEffectBall(this.getPosition(), dir.scale(GameConfig.INITIAL_BALL_SPEED * 0.5), effect);
         System.out.println("EFFECT BALL CREATED");
         GameController.addBall(effectBall);
     }

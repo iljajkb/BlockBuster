@@ -1,6 +1,7 @@
 package game.core.entities.ball;
 
 import game.GameConfig;
+import game.core.entities.Effects;
 import game.core.entities.MyVector;
 import game.core.entities.paddle.Paddle;
 import javafx.scene.canvas.GraphicsContext;
@@ -47,6 +48,10 @@ public class Ball {
     public void setSpeed(double s) {
         double m = velocity.magnitude();
         if (m > 0) velocity = velocity.scale(s / m);
+    }
+
+    public void updateSpeed(double percentage) {
+        this.velocity = velocity.scale(percentage);
     }
 
     public BallType getType() { return type; }

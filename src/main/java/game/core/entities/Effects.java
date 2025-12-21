@@ -1,4 +1,4 @@
-package game.core.entities.ball;
+package game.core.entities;
 
 public enum Effects {
     SLOW_PADDLE,
@@ -6,3 +6,5 @@ public enum Effects {
     FAST_BALL,
     FAST_PADDLE
 }
+
+

@@ -2,7 +2,8 @@ package game.core.logic;
 
 import game.GameConfig;
 import game.core.controller.GameController;
-import game.core.entities.ball.Effects;
+import game.core.entities.EffectController;
+import game.core.entities.Effects;
 import game.core.entities.blocks.Block;
 import game.core.entities.MyVector;
 import game.core.entities.paddle.Paddle;
@@ -14,7 +15,11 @@ import java.util.List;
 public class CollisionHandler {
 
     public static void checkForPaddleCollision(List<Ball> balls, Paddle paddle) {
+        Ball mainBall = null;
         for (Ball ball : balls) {
+            if (ball.isMain()) {
+                mainBall = ball;
+            }
             MyVector pos = ball.getPosition();
 
             if (!ball.isAttached()) { // paddle collision only if ball was released from paddle
@@ -24,7 +29,7 @@ public class CollisionHandler {
                         pos.y - GameConfig.BALL_RADIUS <= paddle.getY() + GameConfig.PADDLE_HEIGHT;
                 if (withinX && withinY) {
                     if (ball.isEffect()) {
-                        handleEffect(ball, paddle);
+                        handleEffect(ball, paddle, mainBall);
                     }
                     paddle.collisionWithBall(ball);
                 }
@@ -32,11 +37,9 @@ public class CollisionHandler {
         }
     }
 
-    private static void handleEffect(Ball ball, Paddle paddle) {
-        GameController.removeBall(ball);
-        if (ball.getEffect() == Effects.SLOW_PADDLE) {
-            paddle.updateMovingSpeed(0.5);
-        }
+    private static void handleEffect(Ball effectBall, Paddle paddle, Ball mainBall) {
+        GameController.removeBall(effectBall);
+        EffectController.handleEffects(effectBall, paddle, mainBall);
     }
 
     public static void checkEdgeCollision(List<Ball> balls, Player player, Paddle paddle, int frameHeight) {

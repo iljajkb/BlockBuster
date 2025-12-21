@@ -1,6 +1,8 @@
 package game.core.entities.blocks;
 
 import game.GameConfig;
+import game.core.entities.EffectController;
+import game.core.entities.Effects;
 import game.core.entities.MyVector;
 import javafx.scene.canvas.GraphicsContext;
 
@@ -21,7 +23,8 @@ public class BlockGrid {
                 if (random > 0.9) {
                     block = new ExtraBallBlock();
                 } else if (random > 0.8) {
-                    block = new BadEffectBlock();
+                    Effects randomEffect = EffectController.getRandomEffect();
+                    block = new EffectBlock(randomEffect);
                 }
                 else {
                     block = new StandardBlock();
