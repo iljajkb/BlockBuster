@@ -10,6 +10,7 @@ import javafx.scene.paint.Color;
 import static game.GameConfig.BLOCK_HEIGHT;
 import static game.GameConfig.BLOCK_WIDTH;
 
+// for better performance
 public class CreateBlockImage {
     private final Color color;
 

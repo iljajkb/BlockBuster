@@ -7,16 +7,22 @@ import game.core.entities.MyVector;
 import javafx.scene.canvas.GraphicsContext;
 
 public class BlockGrid {
-    private static Block[][] createGrid(int width, int height) {
-        Block[][] grid = new Block[width][height];
+    private static Block[][] createGrid(int rows, int cols) {
+        Block[][] grid = new Block[rows][cols];
         int vGap = 15;
         int hGap = 15;
-        int margin = 200;
 
-        for (int r = 0; r < width; r++) {
-            double y = margin + r * (GameConfig.BLOCK_HEIGHT + vGap);
-            for (int c = 0; c < height; c++) {
-                double x = margin + c * (GameConfig.BLOCK_WIDTH + hGap);
+        double totalGridWidth = (cols * GameConfig.BLOCK_WIDTH) + ((cols - 1) * hGap);
+        // double totalGridHeight = (rows * GameConfig.BLOCK_HEIGHT) + ((rows - 1) * vGap);
+
+        // center the grid
+        double startX = (GameConfig.FRAME_WIDTH - totalGridWidth) / 2.0;
+        double startY = 100;
+
+        for (int r = 0; r < rows; r++) {
+            double y = startY + r * (GameConfig.BLOCK_HEIGHT + vGap);
+            for (int c = 0; c < cols; c++) {
+                double x = startX + c * (GameConfig.BLOCK_WIDTH + hGap);
                 double random = Math.random(); // probability for special blocks
                 Block block;
                 if (random > 0.9) {
