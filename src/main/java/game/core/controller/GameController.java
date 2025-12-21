@@ -30,10 +30,11 @@ public class GameController {
     private Block[][] blocks;
     private int highscore;
 
-    private boolean moveLeftPressed = false;
-    private boolean moveRightPressed = false;
-
     private long lastNs = 0;
+
+    private boolean gameStarted = false;
+    private boolean gameOver = false;
+    private boolean paused = false;
 
     private final List<Ball> balls = new ArrayList<>();
     private final List<Ball> ballsToAdd = new ArrayList<>();
@@ -42,17 +43,15 @@ public class GameController {
     private final List<Particle> particles = new ArrayList<>();
     private final List<Particle> particlesToAdd = new ArrayList<>();
 
-    private boolean paused = false;
-    private boolean gameStarted = false;
-    private boolean gameOver = false;
-
     private final EffectController effectController;
 
     private final RenderUIController uiController;
 
     private final LevelController levelController;
 
-    public GameController(GraphicsContext gc, Canvas canvas, int frameHeight) {
+    private final InputController inputController;
+
+    public GameController(GraphicsContext gc, Canvas canvas, int frameHeight, InputController inputController) {
         this.gc = gc;
         this.canvas = canvas;
         this.frameHeight = frameHeight;
@@ -63,28 +62,7 @@ public class GameController {
         this.effectController = new EffectController(paddle, ball);
         this.uiController = new RenderUIController(gc, effectController, p1);
         this.levelController = new LevelController();
-    }
-
-    public void handleKeyPress(KeyEvent e) {
-        switch (e.getCode()) {
-            case SPACE, ENTER -> {
-                if (!gameStarted) {gameStarted = true;}
-                else if (gameOver) {resetGame();}
-            }
-            case UP -> { if (ball.isAttached()) ball.launch(new MyVector(0, -1).scale(GameConfig.INITIAL_BALL_SPEED)); }
-            case ESCAPE -> {
-                if(!gameOver && gameStarted) {paused = !paused;}
-            }
-            case LEFT -> moveLeftPressed = true;
-            case RIGHT -> moveRightPressed = true;
-        }
-    }
-
-    public void handleKeyRelease(KeyEvent e) {
-        switch (e.getCode()) {
-            case LEFT -> moveLeftPressed = false;
-            case RIGHT -> moveRightPressed = false;
-        }
+        this.inputController = inputController;
     }
 
     public void startGameLoop() {
@@ -93,6 +71,25 @@ public class GameController {
         new AnimationTimer() {
             @Override
             public void handle(long now) {
+                if (inputController.consumePauseToggle()) {
+                    if (gameStarted && !gameOver) {
+                        paused = !paused;
+                    }
+                }
+
+                if (inputController.consumeSpaceRequest()) {
+                    if (!gameStarted) {
+                        gameStarted = true;
+                    } else if (gameOver) {
+                        resetGame();
+                    } else {
+                        for (Ball b : balls) {
+                            if (b.isMain() && b.isAttached()) {
+                                b.launch(new MyVector(0, -1).scale(GameConfig.INITIAL_BALL_SPEED));
+                            }
+                        }
+                    }
+                }
 
                 gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
                 gameOver = p1.checkForGameOver();
@@ -141,8 +138,8 @@ public class GameController {
                         double use = Math.min(dt, STEP);
                         updatePhysics(use); // move all balls here, handle collisions
                         if (!paused && gameStarted && !gameOver) {
-                            if (moveLeftPressed) paddle.moveLeft();
-                            if (moveRightPressed) paddle.moveRight();
+                            if (inputController.isMoveLeft()) paddle.moveLeft();
+                            if (inputController.isMoveRight()) paddle.moveRight();
                         }
                         dt -= use;
                     }

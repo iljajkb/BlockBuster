@@ -2,6 +2,7 @@ package game.ui;
 
 import game.GameConfig;
 import game.core.controller.GameController;
+import game.core.controller.InputController;
 import game.core.entities.MyVector;
 import game.core.entities.paddle.Paddle;
 import game.core.entities.Player;
@@ -60,10 +61,11 @@ public class UserInterfaceLoader extends Application {
         primaryStage.setTitle("BlockBuster");
         primaryStage.show();
 
-        GameController gameController = new GameController(gc, canvas, frameHeight);
+        InputController inputController = new InputController();
+        GameController gameController = new GameController(gc, canvas, frameHeight, inputController);
 
-        scene.setOnKeyPressed(gameController::handleKeyPress);
-        scene.setOnKeyReleased(gameController::handleKeyRelease);
+        scene.setOnKeyPressed(inputController::handleKeyPress);
+        scene.setOnKeyReleased(inputController::handleKeyRelease);
 
         gameController.startGameLoop();
     }
