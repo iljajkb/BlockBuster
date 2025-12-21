@@ -9,7 +9,7 @@ import javafx.scene.paint.Color;
 public class Paddle {
     private final int yPos;
     private int xPos;
-    private int paddleWidth = 120;
+    private double paddleWidth = 120;
 
     private int movingSpeed = 5;
 
@@ -37,7 +37,7 @@ public class Paddle {
         }
     }
 
-    public int getPaddleWidth() {
+    public double getPaddleWidth() {
         return paddleWidth;
     }
 
@@ -45,16 +45,16 @@ public class Paddle {
         movingSpeed = (int) (movingSpeed * percentage);
     }
 
-    public void updatePaddleWidth(int newWidth) {
-        paddleWidth = newWidth;
+    public void updatePaddleWidth(double factor) {
+        paddleWidth = paddleWidth * factor;
     }
 
     public void render(GraphicsContext gc) {
         gc.setFill(GameConfig.COLOR_1);
-        gc.fillRect(xPos - (double) paddleWidth / 2,
+        gc.fillRoundRect(xPos - (double) paddleWidth / 2,
                 yPos,
                 paddleWidth,
-                GameConfig.PADDLE_HEIGHT);
+                GameConfig.PADDLE_HEIGHT, 10, 10);
     }
 
     // NOTE: may move to different class for SRP

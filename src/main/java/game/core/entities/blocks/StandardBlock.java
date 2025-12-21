@@ -4,14 +4,26 @@ import game.GameConfig;
 import game.core.entities.MyVector;
 import game.core.entities.Player;
 import game.core.entities.ball.Ball;
+import javafx.scene.SnapshotParameters;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 
 import java.util.Optional;
 
+import static game.GameConfig.*;
+
 public class StandardBlock extends Block {
+    private static Image blockImage;
 
     public StandardBlock() {
         super(50);
+        if (blockImage == null) {
+            CreateBlockImage creator = new CreateBlockImage(COLOR_1);
+            blockImage = creator.createGlowCache();
+        }
     }
 
     @Override
@@ -26,8 +38,7 @@ public class StandardBlock extends Block {
     public void render(GraphicsContext gc) {
         MyVector pos = this.getPosition();
         if (!isDestroyed()) {
-            gc.setFill(GameConfig.COLOR_1);
-            gc.fillRect(pos.x, pos.y, GameConfig.BLOCK_WIDTH, GameConfig.BLOCK_HEIGHT);
+            gc.drawImage(blockImage, pos.x - 20, pos.y - 20);
         }
     }
 

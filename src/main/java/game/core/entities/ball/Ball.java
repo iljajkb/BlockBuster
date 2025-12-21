@@ -109,10 +109,10 @@ public class Ball {
         if (type == BallType.MAIN) {
             gc.setFill(GameConfig.COLOR_1);
         } else if (type == BallType.EXTRA) {
-            gc.setFill(Color.DARKBLUE);
+            gc.setFill(Color.CYAN);
         } else if (type == BallType.EFFECT) {
             gc.setFill(Color.DARKORANGE);
-            gc.fillRect(position.x, position.y, GameConfig.BALL_RADIUS * 2, GameConfig.BALL_RADIUS * 2);
+            gc.fillRoundRect(position.x, position.y, GameConfig.BALL_RADIUS * 2, GameConfig.BALL_RADIUS * 2, 10, 10);
             return;
         }
         gc.fillOval(position.x, position.y, GameConfig.BALL_RADIUS * 2, GameConfig.BALL_RADIUS * 2);
