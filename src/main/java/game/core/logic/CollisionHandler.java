@@ -93,7 +93,7 @@ public class CollisionHandler {
 
     }
 
-    public static void checkBlockCollision(List<Ball> balls, Block[][] blocks, Player player, List<Ball> ballsToAdd, List<Particle> particlesToAdd) {
+    public static boolean checkBlockCollision(List<Ball> balls, Block[][] blocks, Player player, List<Ball> ballsToAdd, List<Particle> particlesToAdd) {
         for (Block[] row : blocks) {
             for (Block block : row) {
                 for (Ball ball : balls) {
@@ -122,10 +122,13 @@ public class CollisionHandler {
                         } else {
                             ball.setVelocity(ball.getVelocity().flipY());
                         }
+
+                        return true;
                     }
                 }
             }
         }
+        return false;
     }
 
 }

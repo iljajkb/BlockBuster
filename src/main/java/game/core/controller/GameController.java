@@ -29,6 +29,9 @@ public class GameController {
     private Block[][] blocks;
     private int highscore;
 
+    private double shakeTime = 0;
+    private double shakeIntensity = 1;
+
     private long lastNs = 0;
 
     private boolean gameStarted = false;
@@ -88,6 +91,17 @@ public class GameController {
                             }
                         }
                     }
+                }
+
+                // screen shake
+                gc.save(); // saves normal gc (0,0)
+
+                if (shakeTime > 0) {
+                    // random offset for shake
+                    double offsetX = (Math.random() - 0.5) * 2 * shakeIntensity;
+                    double offsetY = (Math.random() - 0.5) * 2 * shakeIntensity;
+                    gc.translate(offsetX, offsetY);
+                    shakeTime -= 0.016; // reduces time (ca. 1 frame with 60FPS)
                 }
 
                 gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
@@ -169,6 +183,8 @@ public class GameController {
                     }
                     uiController.renderEffectText(gc);
                     effectController.update();
+
+                    gc.restore();
                 }
             }
         }.start();
@@ -185,7 +201,9 @@ public class GameController {
         }
         CollisionHandler.checkForPaddleCollision(balls, paddle, effectController, ballsToRemove);
         CollisionHandler.checkEdgeCollision(balls, p1, paddle, frameHeight, this, ballsToRemove);
-        CollisionHandler.checkBlockCollision(balls, blocks, p1, ballsToAdd, particles);
+        boolean blockColl = CollisionHandler.checkBlockCollision(balls, blocks, p1, ballsToAdd, particles);
+
+        if (blockColl) shakeTime = 0.5;
 
         balls.removeAll(ballsToRemove);
         ballsToRemove.clear();
@@ -220,5 +238,10 @@ public class GameController {
 
     public void removeAllEffects() {
         effectController.clearAllEffects();
+    }
+
+    public void triggerShake(double duration, double intensity) {
+        this.shakeTime = duration;
+        this.shakeIntensity = intensity;
     }
 }
