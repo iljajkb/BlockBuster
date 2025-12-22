@@ -29,13 +29,7 @@ public class EffectBlock extends Block {
 
     @Override
     public Optional<Ball> hit(Ball ball, Player player, List<Particle> particlesToAdd) {
-        hp = Math.max(0, hp - ball.getCurrentDamage());
-        player.increaseScore(ball.getCurrentDamage());
-
-        MyVector pos = this.getPosition();
-        if (this.hp <= 0) {
-            Particle.animateMultipleParticles(particlesToAdd, pos.x, pos.y);
-        }
+        this.hitHandler(ball, player, particlesToAdd);
 
         MyVector dir = new MyVector(0, 1).normalize();
         Ball effectBall = Ball.createEffectBall(this.getPosition(), dir.scale(GameConfig.INITIAL_BALL_SPEED * 0.5), effect);

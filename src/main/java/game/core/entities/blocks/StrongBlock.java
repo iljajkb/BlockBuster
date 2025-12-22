@@ -6,19 +6,20 @@ import game.core.entities.Player;
 import game.core.entities.ball.Ball;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 
 import java.util.List;
 import java.util.Optional;
 
-import static game.GameConfig.*;
+import static game.GameConfig.COLOR_1;
 
-public class StandardBlock extends Block {
+public class StrongBlock extends Block{
     private static Image blockImage;
 
-    public StandardBlock() {
-        super(50);
+    public StrongBlock() {
+        super(100);
         if (blockImage == null) {
-            CreateBlockImage creator = new CreateBlockImage(COLOR_1);
+            CreateBlockImage creator = new CreateBlockImage(Color.ORCHID);
             blockImage = creator.createGlowCache();
         }
     }
@@ -36,5 +37,4 @@ public class StandardBlock extends Block {
             gc.drawImage(blockImage, pos.x - 20, pos.y - 20);
         }
     }
-
 }

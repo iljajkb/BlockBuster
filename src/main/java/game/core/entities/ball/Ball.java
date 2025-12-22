@@ -48,11 +48,6 @@ public class Ball {
         return velocity.magnitude();
     }
 
-    public void setSpeed(double s) {
-        double m = velocity.magnitude();
-        if (m > 0) velocity = velocity.scale(s / m);
-    }
-
     public void updateSpeed(double percentage) {
         this.velocity = velocity.scale(percentage);
     }

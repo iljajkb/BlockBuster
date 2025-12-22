@@ -24,21 +24,20 @@ public class BlockGrid {
             for (int c = 0; c < cols; c++) {
                 double x = startX + c * (GameConfig.BLOCK_WIDTH + hGap);
                 double random = Math.random(); // probability for special blocks
-                Block block;
-                if (random > 0.9) {
-                    block = new ExtraBallBlock();
-                } else if (random > 0.8) {
-                    Effects randomEffect = EffectController.getRandomEffect();
-                    block = new EffectBlock(randomEffect);
-                }
-                else {
-                    block = new StandardBlock();
-                }
+                Block block = getBlock(random);
                 block.setPosition(new MyVector(x, y));
                 grid[r][c] = block;
             }
         }
         return grid;
+    }
+
+    private static Block getBlock(double random) {
+        if (random < 0.07) return new StrongBlock();
+        if (random < 0.10) return new ExtraBallBlock();
+        if (random < 0.20) return new EffectBlock(EffectController.getRandomEffect());
+
+        return new StandardBlock();
     }
 
     public static Block[][] renderBlockGrid(GraphicsContext gc, int width, int height) {
