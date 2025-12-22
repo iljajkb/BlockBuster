@@ -73,6 +73,7 @@ public class GameController {
         new AnimationTimer() {
             @Override
             public void handle(long now) {
+                inputController.setGameState(gameStarted);
                 if (inputController.consumePauseToggle()) {
                     if (gameStarted && !gameOver) {
                         paused = !paused;
@@ -121,7 +122,7 @@ public class GameController {
                 if (!gameStarted && !p1.checkForGameOver()) {
                     gc.setFill(Color.WHITE);
                     gc.setFont(new Font(50));
-                    uiController.drawCenteredText(gc, "Press SPACE to start the Game", GameConfig.FRAME_HEIGHT / 2.0, 40);
+                    uiController.renderStartScreen(gc);
                 }
                 if (gameStarted) {
 

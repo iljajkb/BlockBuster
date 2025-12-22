@@ -36,6 +36,11 @@ public class RenderUIController {
         gc.fillText(text, x, y);
     }
 
+    public void renderStartScreen(GraphicsContext gc) {
+        drawCenteredText(gc, "Put in your name:", GameConfig.FRAME_HEIGHT / 2.0, 20);
+        drawCenteredText(gc, "Press SPACE to start the Game", GameConfig.FRAME_HEIGHT / 2.0 + 50, 20);
+    }
+
     public void renderGameOver(GraphicsContext gc) {
         gc.setFill(Color.DARKRED);
         drawCenteredText(gc, "GAME OVER", GameConfig.FRAME_HEIGHT / 2.0, 40);
