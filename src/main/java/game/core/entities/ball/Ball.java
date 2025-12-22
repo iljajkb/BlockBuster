@@ -3,9 +3,12 @@ package game.core.entities.ball;
 import game.GameConfig;
 import game.core.entities.Effects;
 import game.core.entities.MyVector;
+import game.core.entities.Particle;
 import game.core.entities.paddle.Paddle;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+
+import java.util.List;
 
 public class Ball {
     public enum BallType { MAIN, EXTRA, EFFECT }
@@ -105,7 +108,7 @@ public class Ball {
         return damage;
     }
 
-    public void render(GraphicsContext gc) {
+    public void render(GraphicsContext gc, List<Particle> particlesToAdd) {
         if (type == BallType.MAIN) {
             gc.setFill(GameConfig.COLOR_1);
         } else if (type == BallType.EXTRA) {
@@ -116,6 +119,9 @@ public class Ball {
             return;
         }
         gc.fillOval(position.x, position.y, GameConfig.BALL_RADIUS * 2, GameConfig.BALL_RADIUS * 2);
+        if (!this.isAttached() && this.isMain()) {
+            Particle.animateParticleTail(particlesToAdd, this.position.x, this.position.y, Color.WHITE);
+        }
     }
 
     public void setEffect(Effects effect) {

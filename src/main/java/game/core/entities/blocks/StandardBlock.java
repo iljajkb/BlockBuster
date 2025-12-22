@@ -1,6 +1,7 @@
 package game.core.entities.blocks;
 
 import game.core.entities.MyVector;
+import game.core.entities.Particle;
 import game.core.entities.Player;
 import game.core.entities.ball.Ball;
 import javafx.scene.canvas.GraphicsContext;
@@ -30,7 +31,7 @@ public class StandardBlock extends Block {
 
         MyVector pos = this.getPosition();
         if (this.hp <= 0) {
-            Particle.animateMultipleParticles(particlesToAdd, pos.x, pos.y, COLOR_1);
+            Particle.animateMultipleParticles(particlesToAdd, pos.x, pos.y);
         }
 
         return Optional.empty();

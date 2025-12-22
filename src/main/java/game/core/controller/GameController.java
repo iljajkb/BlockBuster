@@ -5,14 +5,13 @@ import game.core.entities.*;
 import game.core.entities.ball.Ball;
 import game.core.entities.blocks.Block;
 import game.core.entities.blocks.BlockGrid;
-import game.core.entities.blocks.Particle;
+import game.core.entities.Particle;
 import game.core.entities.paddle.Paddle;
 import game.core.logic.CollisionHandler;
 import game.ui.RenderUIController;
 import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
@@ -98,9 +97,9 @@ public class GameController {
                 if (BlockGrid.allBlocksDestroyed(blocks)) {
                     blocks = levelController.renderNewLevel(gc, ball, paddle);
 
+                    ballsToRemove.clear();
                     removeAllExtraBalls();
                     ballsToAdd.clear();
-                    ballsToRemove.clear();
 
                     lastNs = 0; // prevent dt spike
                 }
@@ -166,7 +165,7 @@ public class GameController {
                     p1.renderScore(gc);
                     paddle.render(gc);
                     for (Ball b : balls) {
-                        b.render(gc);
+                        b.render(gc, particlesToAdd);
                     }
                     uiController.renderEffectText(gc);
                     effectController.update();
@@ -180,7 +179,9 @@ public class GameController {
         ballsToAdd.clear();
 
         for (Ball b : balls) {
-            if (!b.isAttached()) b.move(dt); // position += velocity(px/s) * dt
+            if (!b.isAttached()) {
+                b.move(dt); // position += velocity(px/s) * dt
+            }
         }
         CollisionHandler.checkForPaddleCollision(balls, paddle, effectController, ballsToRemove);
         CollisionHandler.checkEdgeCollision(balls, p1, paddle, frameHeight, this, ballsToRemove);
@@ -192,7 +193,8 @@ public class GameController {
         particles.addAll(particlesToAdd);
         particlesToAdd.clear();
 
-        particles.forEach(p -> p.update(dt));
+        particles.forEach(p -> p.updateSplashParticles(dt));
+        particles.forEach(p -> p.updateTailParticles(dt));
         particles.removeIf(Particle::isDead);
     }
 

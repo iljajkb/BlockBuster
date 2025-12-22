@@ -2,6 +2,7 @@ package game.core.entities.blocks;
 
 import game.GameConfig;
 import game.core.entities.MyVector;
+import game.core.entities.Particle;
 import game.core.entities.Player;
 import game.core.entities.ball.Ball;
 import game.core.entities.Effects;
@@ -33,7 +34,7 @@ public class EffectBlock extends Block {
 
         MyVector pos = this.getPosition();
         if (this.hp <= 0) {
-            Particle.animateMultipleParticles(particlesToAdd, pos.x, pos.y, COLOR);
+            Particle.animateMultipleParticles(particlesToAdd, pos.x, pos.y);
         }
 
         MyVector dir = new MyVector(0, 1).normalize();

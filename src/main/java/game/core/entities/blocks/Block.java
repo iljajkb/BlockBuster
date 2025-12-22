@@ -1,6 +1,7 @@
 package game.core.entities.blocks;
 
 import game.core.entities.MyVector;
+import game.core.entities.Particle;
 import game.core.entities.Player;
 import game.core.entities.ball.Ball;
 import javafx.scene.canvas.GraphicsContext;
