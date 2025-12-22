@@ -49,8 +49,8 @@ public class EffectController {
 
     private double getFactorForEffect(Effects effect) {
         return switch (effect) {
-            case SLOW_PADDLE, SLOW_BALL -> 0.5;
-            case FAST_PADDLE, FAST_BALL -> 1.5;
+            case SLOW_PADDLE, SLOW_BALL, SHORT_PADDLE -> 0.5;
+            case FAST_PADDLE, FAST_BALL, LONG_PADDLE -> 1.5;
         };
     }
 
@@ -65,13 +65,14 @@ public class EffectController {
         switch (effect) {
             case SLOW_PADDLE, FAST_PADDLE -> paddle.updateMovingSpeed(factor);
             case SLOW_BALL, FAST_BALL -> mainBall.updateSpeed(factor);
+            case LONG_PADDLE, SHORT_PADDLE -> paddle.updatePaddleWidth(factor);
         }
     }
 
     private double getReverseFactor(Effects effect) {
         return switch (effect) {
-            case SLOW_PADDLE, SLOW_BALL -> 2.0;
-            case FAST_PADDLE, FAST_BALL -> 1.0 / 1.5;
+            case SLOW_PADDLE, SLOW_BALL, SHORT_PADDLE -> 2.0;
+            case FAST_PADDLE, FAST_BALL, LONG_PADDLE -> 1.0 / 1.5;
         };
     }
 
