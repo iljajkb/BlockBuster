@@ -62,6 +62,7 @@ public class CollisionHandler {
                     player.loseLife();
                     ball.reset(paddle);
                     controller.removeAllExtraBalls();
+                    controller.removeAllEffects();
                     return;
                 } else if (ball.getType() == Ball.BallType.EXTRA) {
                     ballsToRemove.add(ball);

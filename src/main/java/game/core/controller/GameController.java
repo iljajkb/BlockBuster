@@ -218,4 +218,7 @@ public class GameController {
         ballsToRemove.addAll(allExtraBalls);
     }
 
+    public void removeAllEffects() {
+        effectController.clearAllEffects();
+    }
 }

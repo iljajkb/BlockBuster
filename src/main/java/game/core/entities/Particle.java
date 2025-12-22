@@ -49,7 +49,8 @@ public class Particle {
 
     public boolean isDead() { return life <= 0; }
 
-    public static void animateParticleTail(List<Particle> particlesToAdd, double x, double y, Color color) {
+    public static void animateParticleTail(List<Particle> particlesToAdd, double x, double y) {
+        Color color = ColorPicker.pickColor();
         particlesToAdd.add(new Particle(x + GameConfig.BALL_RADIUS / 2.0, y, color));
     }
 

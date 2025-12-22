@@ -74,4 +74,11 @@ public class EffectController {
             case FAST_PADDLE, FAST_BALL -> 1.0 / 1.5;
         };
     }
+
+    public void clearAllEffects() {
+        for (ActiveEffect activeEffect : activeEffects) {
+            applyEffect(activeEffect.getActiveEffect(), false);
+        }
+        activeEffects.clear();
+    }
 }

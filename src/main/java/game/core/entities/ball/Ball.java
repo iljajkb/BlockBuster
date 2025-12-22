@@ -120,7 +120,7 @@ public class Ball {
         }
         gc.fillOval(position.x, position.y, GameConfig.BALL_RADIUS * 2, GameConfig.BALL_RADIUS * 2);
         if (!this.isAttached() && this.isMain()) {
-            Particle.animateParticleTail(particlesToAdd, this.position.x, this.position.y, Color.WHITE);
+            Particle.animateParticleTail(particlesToAdd, this.position.x, this.position.y);
         }
     }
 
