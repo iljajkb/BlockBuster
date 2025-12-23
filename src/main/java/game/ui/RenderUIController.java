@@ -23,13 +23,17 @@ public class RenderUIController {
         this.p1 = player;
     }
 
-    public void drawCenteredText(GraphicsContext gc, String text, double y, double fontSize) {
+    private void drawCenteredText(GraphicsContext gc, String text, double y, double fontSize) {
         gc.setFont(new Font(fontSize));
         javafx.scene.text.Text helper = new javafx.scene.text.Text(text);
         helper.setFont(gc.getFont());
         double textWidth = helper.getLayoutBounds().getWidth();
         double x = (GameConfig.FRAME_WIDTH - textWidth) / 2;
         gc.fillText(text, x, y);
+    }
+
+    public void drawPauseScreen(GraphicsContext gc) {
+        drawCenteredText(gc, "PAUSED\nPRESS ESC TO CONTINUE", GameConfig.FRAME_HEIGHT / 2.0, 20);
     }
 
     public void updatePlayerName(String newPlayerName) {
@@ -41,13 +45,16 @@ public class RenderUIController {
         drawCenteredText(gc, "Press SPACE to start the Game", GameConfig.FRAME_HEIGHT / 2.0 + 50, 20);
     }
 
-    public void renderGameOver(GraphicsContext gc, int highscore) {
+    public void renderGameOver(GraphicsContext gc, int highscore, boolean newHighscore) {
         gc.setFill(Color.DARKRED);
         drawCenteredText(gc, "GAME OVER", GameConfig.FRAME_HEIGHT / 2.0 - 120, 40);
         gc.setFill(Color.WHITE);
+        String highScoreText = "HIGHSCORE: ";
+        if (newHighscore) highScoreText = "NEW " + highScoreText;
+
         drawCenteredText(gc, "Player: " + playerName, GameConfig.FRAME_HEIGHT / 2.0, 20);
         drawCenteredText(gc, "SCORE: " + p1.getScore(), GameConfig.FRAME_HEIGHT / 2.0 + 30, 20);
-        drawCenteredText(gc, "HIGHSCORE: " + highscore, GameConfig.FRAME_HEIGHT / 2.0 + 60, 20);
+        drawCenteredText(gc, highScoreText + highscore, GameConfig.FRAME_HEIGHT / 2.0 + 60, 20);
         drawCenteredText(gc, "Press space to play again", GameConfig.FRAME_HEIGHT / 2.0 + 90, 20);
     }
 

@@ -34,9 +34,12 @@ public class GameController {
 
     private long lastNs = 0;
 
+    // flags
     private boolean gameStarted = false;
     private boolean gameOver = false;
     private boolean paused = false;
+    private boolean isNewRecord = false;
+    private boolean scoreProcessed = false;
 
     private final List<Ball> balls = new ArrayList<>();
     private final List<Ball> ballsToAdd = new ArrayList<>();
@@ -131,19 +134,26 @@ public class GameController {
 
                     if (paused) {
                         gc.setFill(Color.WHITE);
-                        uiController.drawCenteredText(gc, "PAUSED\nPRESS ESC TO CONTINUE", GameConfig.FRAME_HEIGHT / 2.0, 20);
+                        uiController.drawPauseScreen(gc);
                         return;
                     }
 
+                    String playerName = inputController.getNameInput();
+                    uiController.updatePlayerName(playerName);
+                    if (gameOver && !scoreProcessed) {
+
+                        int oldHighScore = profileManager.findScoreByName(playerName);
+                        int currentScore = p1.getScore();
+
+                        isNewRecord = currentScore > oldHighScore;
+
+                        profileManager.saveScore(playerName, currentScore);
+
+                        scoreProcessed = true;
+                    }
+
                     if (gameOver) {
-                        String playerName = inputController.getNameInput();
-                        if (p1.getScore() > highscore) {
-                            highscore = p1.getScore();
-                            profileManager.saveScore(playerName, p1.getScore());
-                        }
-                        highscore = profileManager.findScoreByName(playerName);
-                        uiController.updatePlayerName(playerName);
-                        uiController.renderGameOver(gc, highscore);
+                        uiController.renderGameOver(gc, profileManager.findScoreByName(playerName), isNewRecord);
                         return;
                     }
 
@@ -231,6 +241,7 @@ public class GameController {
         gameOver = false;
         gameStarted = true;
         paused = false;
+        scoreProcessed = false;
         removeAllExtraBalls();
     }
 
