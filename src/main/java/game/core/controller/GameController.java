@@ -68,7 +68,7 @@ public class GameController {
         addBall(this.ball);
         this.p1 = new Player();
         this.effectController = new EffectController(paddle, ball);
-        this.uiController = new RenderUIController(gc, effectController, p1);
+        this.uiController = new RenderUIController(effectController, p1);
         this.levelController = new LevelController();
         this.inputController = inputController;
         this.profileManager = new ProfileManager();
@@ -113,6 +113,7 @@ public class GameController {
                 }
 
                 gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+                uiController.renderBackground(gc);
                 gameOver = p1.checkForGameOver();
 
                 // --- Level cleared ---

@@ -6,6 +6,9 @@ import game.core.entities.EffectController;
 import game.core.entities.Player;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.RadialGradient;
+import javafx.scene.paint.Stop;
 import javafx.scene.text.Font;
 
 import java.util.List;
@@ -14,12 +17,11 @@ import java.util.Map;
 public class RenderUIController {
 
     private EffectController effectController;
-    private final GraphicsContext gc;
     private Player p1;
     private String playerName = "PLAYER01";
+    private double gridOffset = 0;
 
-    public RenderUIController(GraphicsContext gc, EffectController effectController, Player player) {
-        this.gc = gc;
+    public RenderUIController(EffectController effectController, Player player) {
         this.effectController = effectController;
         this.p1 = player;
     }
@@ -122,6 +124,11 @@ public class RenderUIController {
         gc.fillText("x " + lives, heartX + heartSize + 10, heartY + (heartY * 0.5 + heartY * 0.25));
     }
 
+    public void renderBackground(GraphicsContext gc) {
+        renderVignette(gc);
+        renderRetroGrid(gc);
+    }
+
     private void drawHeart(GraphicsContext gc, double x, double y, double size) {
         gc.beginPath();
 
@@ -137,5 +144,37 @@ public class RenderUIController {
 
         gc.fill();
         gc.closePath();
+    }
+
+    private void renderRetroGrid(GraphicsContext gc) {
+        gc.setStroke(Color.web("#1a1a1a"));
+        gc.setLineWidth(1.0);
+
+        double spacing = 40;
+        gridOffset = (gridOffset + 0.5) % spacing;
+
+        for (double y = gridOffset; y < GameConfig.FRAME_HEIGHT; y += spacing) {
+            gc.strokeLine(0, y, GameConfig.FRAME_WIDTH, y);
+        }
+
+        for (double x = 0; x < GameConfig.FRAME_WIDTH; x += spacing) {
+            gc.strokeLine(x, 0, x, GameConfig.FRAME_HEIGHT);
+        }
+    }
+
+    private void renderVignette(GraphicsContext gc) {
+
+        RadialGradient gradient = new RadialGradient(
+                0, 0,
+                GameConfig.FRAME_WIDTH / 2.0, GameConfig.FRAME_HEIGHT / 2.0,
+                GameConfig.FRAME_WIDTH,
+                false,
+                CycleMethod.NO_CYCLE,
+                new Stop(0, Color.web("#002424")),
+                new Stop(1, Color.BLACK)
+        );
+
+        gc.setFill(gradient);
+        gc.fillRect(0, 0, GameConfig.FRAME_WIDTH, GameConfig.FRAME_HEIGHT);
     }
 }
