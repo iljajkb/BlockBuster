@@ -28,7 +28,6 @@ public class GameController {
     private final int frameHeight;
     private final Player p1;
     private Block[][] blocks;
-    private int highscore;
 
     private double shakeTime = 0;
     private double shakeIntensity = 1;
@@ -41,6 +40,7 @@ public class GameController {
     private boolean paused = false;
     private boolean isNewRecord = false;
     private boolean scoreProcessed = false;
+    private boolean loopStarted = false;
 
     private final List<Ball> balls = new ArrayList<>();
     private final List<Ball> ballsToAdd = new ArrayList<>();
@@ -75,11 +75,13 @@ public class GameController {
     }
 
     public void startGameLoop() {
-        highscore = 0;
+        if (loopStarted) return; // prevents multiple start of gameLoop
+        loopStarted = true;
         blocks = levelController.initFirstLevel(gc);
         new AnimationTimer() {
             @Override
             public void handle(long now) {
+
                 inputController.setGameState(gameStarted);
                 if (inputController.consumePauseToggle()) {
                     if (gameStarted && !gameOver) {
@@ -112,7 +114,8 @@ public class GameController {
                     shakeTime -= 0.016; // reduces time (ca. 1 frame with 60FPS)
                 }
 
-                gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+                gc.setFill(Color.BLACK);
+                gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
                 uiController.renderBackground(gc);
                 gameOver = p1.checkForGameOver();
 
@@ -164,11 +167,14 @@ public class GameController {
                     double dt = (now - lastNs) / 1_000_000_000.0; // seconds
                     lastNs = now;
 
-                    if (dt > 0.25) dt = 0.25;
-
+                    // reduced cap for better performance / less CPU usage
+                    if (dt > 0.1 ) dt = 0.1;
+                    int maxSafetyCounter = 0;
                     // physics substeps for stable collisions
                     final double STEP = 1.0 / 120.0; // 120 Hz
-                    while (dt > 0) {
+
+                    // max 3 steps per frame
+                    while (dt > 0 && maxSafetyCounter < 3) {
                         double use = Math.min(dt, STEP);
                         updatePhysics(use); // move all balls here, handle collisions
                         if (!paused && gameStarted && !gameOver) {
@@ -176,6 +182,7 @@ public class GameController {
                             if (inputController.isMoveRight()) paddle.moveRight();
                         }
                         dt -= use;
+                        maxSafetyCounter++;
                     }
 
                     // --- Follow paddle for attached main ball(s) BEFORE rendering ---

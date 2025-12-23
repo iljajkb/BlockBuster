@@ -16,22 +16,27 @@ import java.util.Map;
 
 public class RenderUIController {
 
-    private EffectController effectController;
-    private Player p1;
+    private final EffectController effectController;
+    private final Player p1;
     private String playerName = "PLAYER01";
     private double gridOffset = 0;
+    private final Font biggerArcadeFont;
+    private final Font smallerArcadeFont;
 
     public RenderUIController(EffectController effectController, Player player) {
         this.effectController = effectController;
         this.p1 = player;
+        this.biggerArcadeFont = Font.loadFont(getClass().getResourceAsStream("/fonts/press_start_2p.ttf"), 18);
+        this.smallerArcadeFont = Font.loadFont(getClass().getResourceAsStream("/fonts/press_start_2p.ttf"), 12);
     }
 
-    private Font getArcadeFont(int size) {
-        return Font.loadFont(getClass().getResourceAsStream("/fonts/press_start_2p.ttf"), size);
-    }
+    private void drawCenteredText(GraphicsContext gc, String text, double y, boolean big) {
+        if (big) {
+            gc.setFont(biggerArcadeFont);
+        } else {
+            gc.setFont(smallerArcadeFont);
+        }
 
-    private void drawCenteredText(GraphicsContext gc, String text, double y, double fontSize) {
-        gc.setFont(getArcadeFont(16));
         javafx.scene.text.Text helper = new javafx.scene.text.Text(text);
         helper.setFont(gc.getFont());
         double textWidth = helper.getLayoutBounds().getWidth();
@@ -40,7 +45,7 @@ public class RenderUIController {
     }
 
     public void drawPauseScreen(GraphicsContext gc) {
-        drawCenteredText(gc, "PAUSED\nPRESS ESC TO CONTINUE", GameConfig.FRAME_HEIGHT / 2.0, 20);
+        drawCenteredText(gc, "PAUSED\nPRESS ESC TO CONTINUE", GameConfig.FRAME_HEIGHT / 2.0, true);
     }
 
     public void updatePlayerName(String newPlayerName) {
@@ -49,18 +54,18 @@ public class RenderUIController {
 
     public void renderStartScreen(GraphicsContext gc, String playerNameInput, List<Map.Entry<String, Integer>> topFive) {
         gc.setFill(Color.WHITE);
-        drawCenteredText(gc, "PLAYER: " + playerNameInput + "_", GameConfig.FRAME_HEIGHT / 2.0 - 150, 30);
-        drawCenteredText(gc, "Press SPACE to start the Game", GameConfig.FRAME_HEIGHT / 2.0 - 100, 20);
+        drawCenteredText(gc, "PLAYER: " + playerNameInput + "_", GameConfig.FRAME_HEIGHT / 2.0 - 150, true);
+        drawCenteredText(gc, "Press SPACE to start the Game", GameConfig.FRAME_HEIGHT / 2.0 - 100, false);
 
         gc.setFill(Color.GOLD);
-        drawCenteredText(gc, "--- HALL OF FAME ---", GameConfig.FRAME_HEIGHT / 2.0, 25);
+        drawCenteredText(gc, "--- HALL OF FAME ---", GameConfig.FRAME_HEIGHT / 2.0, false);
 
         gc.setFill(Color.LIGHTGRAY);
         double startY = GameConfig.FRAME_HEIGHT / 2.0 + 40;
         double lineHeight = 25;
 
         if (topFive == null || topFive.isEmpty()) {
-            drawCenteredText(gc, "No highscores yet. Be the first!", startY, 15);
+            drawCenteredText(gc, "No highscores yet. Be the first!", startY, false);
         } else {
             for (int i = 0; i < topFive.size(); i++) {
                 Map.Entry<String, Integer> entry = topFive.get(i);
@@ -71,7 +76,7 @@ public class RenderUIController {
 
                 String leaderBoardLine = String.format("%-3s %-12s %10s", rank, name, score);
 
-                drawCenteredText(gc, leaderBoardLine, startY + (i * lineHeight), 18);
+                drawCenteredText(gc, leaderBoardLine, startY + (i * lineHeight), false);
             }
         }
 
@@ -79,20 +84,20 @@ public class RenderUIController {
 
     public void renderGameOver(GraphicsContext gc, int highscore, boolean newHighscore) {
         gc.setFill(Color.DARKRED);
-        drawCenteredText(gc, "GAME OVER", GameConfig.FRAME_HEIGHT / 2.0 - 120, 40);
+        drawCenteredText(gc, "GAME OVER", GameConfig.FRAME_HEIGHT / 2.0 - 120, true);
         gc.setFill(Color.WHITE);
         String highScoreText = "HIGHSCORE: ";
         if (newHighscore) highScoreText = "NEW " + highScoreText;
 
-        drawCenteredText(gc, "Player: " + playerName, GameConfig.FRAME_HEIGHT / 2.0, 20);
-        drawCenteredText(gc, "SCORE: " + p1.getScore(), GameConfig.FRAME_HEIGHT / 2.0 + 30, 20);
-        drawCenteredText(gc, highScoreText + highscore, GameConfig.FRAME_HEIGHT / 2.0 + 60, 20);
-        drawCenteredText(gc, "Press space to play again", GameConfig.FRAME_HEIGHT / 2.0 + 90, 20);
+        drawCenteredText(gc, "Player: " + playerName, GameConfig.FRAME_HEIGHT / 2.0, false);
+        drawCenteredText(gc, "SCORE: " + p1.getScore(), GameConfig.FRAME_HEIGHT / 2.0 + 30, false);
+        drawCenteredText(gc, highScoreText + highscore, GameConfig.FRAME_HEIGHT / 2.0 + 60, false);
+        drawCenteredText(gc, "Press space to play again", GameConfig.FRAME_HEIGHT / 2.0 + 90, false);
     }
 
     public void renderEffectText(GraphicsContext gc) {
         gc.setFill(Color.RED);
-        gc.setFont(getArcadeFont(12));
+        gc.setFont(smallerArcadeFont);
         List<ActiveEffect> list = effectController.getActiveEffects();
         if (list.isEmpty()) {
             return;
@@ -107,7 +112,7 @@ public class RenderUIController {
 
     public void renderScore(GraphicsContext gc, int score) {
         gc.setFill(Color.WHITE);
-        gc.setFont(getArcadeFont(12));
+        gc.setFont(smallerArcadeFont);
         gc.fillText("SCORE | " + score, GameConfig.FRAME_WIDTH - 175, 35);
     }
 
@@ -120,7 +125,7 @@ public class RenderUIController {
         drawHeart(gc, heartX, heartY, heartSize);
 
         gc.setFill(Color.WHITE);
-        gc.setFont(getArcadeFont(12));
+        gc.setFont(smallerArcadeFont);
         gc.fillText("x " + lives, heartX + heartSize + 10, heartY + (heartY * 0.5 + heartY * 0.25));
     }
 
