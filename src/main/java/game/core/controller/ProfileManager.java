@@ -23,6 +23,7 @@ public class ProfileManager {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_PATH))) {
             oos.writeObject(scores);
         } catch (IOException e) { e.printStackTrace(); }
+        System.out.println("WROTE SCORES: " + scores + " to " + FILE_PATH + ".");
     }
 
     private void loadScores() {
@@ -32,6 +33,14 @@ public class ProfileManager {
                 scores = (Map<String, Integer>) ois.readObject();
             } catch (Exception e) { e.printStackTrace(); }
         }
+    }
+
+    public int findScoreByName(String name) {
+        return scores.entrySet().stream()
+                .filter(s -> s.getKey().equals(name))
+                .mapToInt(Map.Entry::getValue)
+                .limit(1)
+                .sum();
     }
 
     public List<Map.Entry<String, Integer>> getTopTen() {

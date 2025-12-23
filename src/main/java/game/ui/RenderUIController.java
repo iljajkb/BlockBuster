@@ -15,11 +15,7 @@ public class RenderUIController {
     private EffectController effectController;
     private final GraphicsContext gc;
     private Player p1;
-
-    private int highscore;
-
-
-
+    private String playerName = "PLAYER01";
 
     public RenderUIController(GraphicsContext gc, EffectController effectController, Player player) {
         this.gc = gc;
@@ -36,15 +32,20 @@ public class RenderUIController {
         gc.fillText(text, x, y);
     }
 
+    public void updatePlayerName(String newPlayerName) {
+        this.playerName = newPlayerName;
+    }
+
     public void renderStartScreen(GraphicsContext gc, String playerNameInput) {
         drawCenteredText(gc, "Put in your name: " + playerNameInput, GameConfig.FRAME_HEIGHT / 2.0, 20);
         drawCenteredText(gc, "Press SPACE to start the Game", GameConfig.FRAME_HEIGHT / 2.0 + 50, 20);
     }
 
-    public void renderGameOver(GraphicsContext gc) {
+    public void renderGameOver(GraphicsContext gc, int highscore) {
         gc.setFill(Color.DARKRED);
-        drawCenteredText(gc, "GAME OVER", GameConfig.FRAME_HEIGHT / 2.0, 40);
+        drawCenteredText(gc, "GAME OVER", GameConfig.FRAME_HEIGHT / 2.0 - 120, 40);
         gc.setFill(Color.WHITE);
+        drawCenteredText(gc, "Player: " + playerName, GameConfig.FRAME_HEIGHT / 2.0, 20);
         drawCenteredText(gc, "SCORE: " + p1.getScore(), GameConfig.FRAME_HEIGHT / 2.0 + 30, 20);
         drawCenteredText(gc, "HIGHSCORE: " + highscore, GameConfig.FRAME_HEIGHT / 2.0 + 60, 20);
         drawCenteredText(gc, "Press space to play again", GameConfig.FRAME_HEIGHT / 2.0 + 90, 20);

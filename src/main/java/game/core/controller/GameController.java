@@ -53,6 +53,8 @@ public class GameController {
 
     private final InputController inputController;
 
+    private final ProfileManager profileManager;
+
     public GameController(GraphicsContext gc, Canvas canvas, int frameHeight, InputController inputController) {
         this.gc = gc;
         this.canvas = canvas;
@@ -65,6 +67,7 @@ public class GameController {
         this.uiController = new RenderUIController(gc, effectController, p1);
         this.levelController = new LevelController();
         this.inputController = inputController;
+        this.profileManager = new ProfileManager();
     }
 
     public void startGameLoop() {
@@ -133,10 +136,14 @@ public class GameController {
                     }
 
                     if (gameOver) {
-                        uiController.renderGameOver(gc);
+                        String playerName = inputController.getNameInput();
                         if (p1.getScore() > highscore) {
                             highscore = p1.getScore();
+                            profileManager.saveScore(playerName, p1.getScore());
                         }
+                        highscore = profileManager.findScoreByName(playerName);
+                        uiController.updatePlayerName(playerName);
+                        uiController.renderGameOver(gc, highscore);
                         return;
                     }
 
