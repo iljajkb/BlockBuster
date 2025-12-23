@@ -33,9 +33,20 @@ public class BlockGrid {
     }
 
     private static Block getBlock(double random) {
-        if (random < 0.07) return new StrongBlock();
-        if (random < 0.10) return new ExtraBallBlock();
-        if (random < 0.20) return new EffectBlock(EffectController.getRandomEffect());
+        double cumulativeProbability = 0.0;
+
+        for (BlockType type : BlockType.values()) {
+            cumulativeProbability += type.getProbability();
+
+            if (random < cumulativeProbability) {
+                return switch (type) {
+                    case STRONG     -> new StrongBlock();
+                    case EXTRA_BALL -> new ExtraBallBlock();
+                    case EFFECT     -> new EffectBlock(EffectController.getRandomEffect());
+                    case STANDARD   -> new StandardBlock();
+                };
+            }
+        }
 
         return new StandardBlock();
     }

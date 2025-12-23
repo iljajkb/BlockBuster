@@ -42,7 +42,7 @@ public class LevelController {
         }
 
         ball.reset(paddle);
-        ball.updateSpeed(1.07);
+        ball.updateSpeed(1.25);
 
         int currentRows = getCurrentRows();
         int currentColumns = getCurrentColumns();
