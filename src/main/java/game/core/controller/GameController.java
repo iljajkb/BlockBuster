@@ -17,6 +17,7 @@ import javafx.scene.text.Font;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class GameController {
 
@@ -128,7 +129,8 @@ public class GameController {
                 if (!gameStarted && !p1.checkForGameOver()) {
                     gc.setFill(Color.WHITE);
                     gc.setFont(new Font(50));
-                    uiController.renderStartScreen(gc, inputController.getNameInput());
+                    List<Map.Entry<String, Integer>> topFive = profileManager.getTopFive();
+                    uiController.renderStartScreen(gc, inputController.getNameInput(), topFive);
                 }
                 if (gameStarted) {
 
@@ -193,8 +195,8 @@ public class GameController {
                         p.render(gc);
                     }
 
-                    p1.renderLives(gc);
-                    p1.renderScore(gc);
+                    uiController.renderLives(gc, p1.getLives());
+                    uiController.renderScore(gc, p1.getScore());
                     paddle.render(gc);
                     for (Ball b : balls) {
                         b.render(gc, particlesToAdd);

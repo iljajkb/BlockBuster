@@ -25,23 +25,8 @@ public class Player {
         return score;
     }
 
-    public void renderLives(GraphicsContext gc) {
-        double heartX = 20;
-        double heartY = 20;
-        double heartSize = 15;
-
-        gc.setFill(Color.RED);
-        gc.fillOval(heartX, heartY, heartSize, heartSize);
-
-        gc.setFill(Color.WHITE);
-        gc.setFont(new Font(15));
-        gc.fillText("x " + lives, heartX + heartSize + 10, heartY + heartSize / 1.5);
-    }
-
-    public void renderScore(GraphicsContext gc) {
-        gc.setFill(Color.WHITE);
-        gc.setFont(new Font(20));
-        gc.fillText("SCORE: " + score, GameConfig.FRAME_WIDTH - 150, 35);
+    public int getLives() {
+        return lives;
     }
 
     public void reset() {

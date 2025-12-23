@@ -43,10 +43,10 @@ public class ProfileManager {
                 .sum();
     }
 
-    public List<Map.Entry<String, Integer>> getTopTen() {
+    public List<Map.Entry<String, Integer>> getTopFive() {
         return scores.entrySet().stream()
                 .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
-                .limit(10)
+                .limit(5)
                 .toList();
     }
 }
