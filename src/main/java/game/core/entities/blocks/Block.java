@@ -32,7 +32,7 @@ public abstract class Block {
     public void hitHandler(Ball ball, Player player, List<Particle> particlesToAdd) {
         long now = System.currentTimeMillis();
         // prevents hit register in less than 500 milliseconds
-        if (now - lastHitTime < 250) return;
+        if (now - lastHitTime < 500) return;
         lastHitTime = now;
 
         hp = Math.max(0, hp - ball.getCurrentDamage());

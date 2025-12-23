@@ -25,8 +25,6 @@ public class InputController {
                 nameInput.deleteCharAt(nameInput.length() - 1);
             }
         }
-        if (nameInput.isEmpty()) nameInput.append("PLAYER1");
-        System.out.println("CURRENT PLAYER: " + nameInput);
         switch (e.getCode()) {
             case LEFT -> moveLeftPressed = true;
             case RIGHT -> moveRightPressed = true;
@@ -49,6 +47,7 @@ public class InputController {
 
     public boolean consumeSpaceRequest() {
         if (spaceRequested) {
+            if (nameInput.isEmpty()) nameInput.append("PLAYER1");
             spaceRequested = false;
             return true;
         }

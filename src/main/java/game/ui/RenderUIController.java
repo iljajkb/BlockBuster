@@ -36,8 +36,8 @@ public class RenderUIController {
         gc.fillText(text, x, y);
     }
 
-    public void renderStartScreen(GraphicsContext gc) {
-        drawCenteredText(gc, "Put in your name:", GameConfig.FRAME_HEIGHT / 2.0, 20);
+    public void renderStartScreen(GraphicsContext gc, String playerNameInput) {
+        drawCenteredText(gc, "Put in your name: " + playerNameInput, GameConfig.FRAME_HEIGHT / 2.0, 20);
         drawCenteredText(gc, "Press SPACE to start the Game", GameConfig.FRAME_HEIGHT / 2.0 + 50, 20);
     }
 

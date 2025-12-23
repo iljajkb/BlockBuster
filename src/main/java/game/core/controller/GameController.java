@@ -122,7 +122,7 @@ public class GameController {
                 if (!gameStarted && !p1.checkForGameOver()) {
                     gc.setFill(Color.WHITE);
                     gc.setFont(new Font(50));
-                    uiController.renderStartScreen(gc);
+                    uiController.renderStartScreen(gc, inputController.getNameInput());
                 }
                 if (gameStarted) {
 
