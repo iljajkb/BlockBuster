@@ -23,6 +23,9 @@ public class RenderUIController {
     private final Font biggerArcadeFont;
     private final Font smallerArcadeFont;
 
+    private double vignetteIntensity = 0;
+    private double dt = 0.0;
+
     // cache for score and lives
     private int lastScore = -1;
     private String scoreTextCache = "";
@@ -88,6 +91,10 @@ public class RenderUIController {
 
     }
 
+    public void updateRenderDT(double dt) {
+        this.dt = dt;
+    }
+
     public void renderGameOver(GraphicsContext gc, int highscore, boolean newHighscore) {
         gc.setFill(Color.DARKRED);
         drawCenteredText(gc, "GAME OVER", GameConfig.FRAME_HEIGHT / 2.0 - 120, true);
@@ -146,7 +153,7 @@ public class RenderUIController {
 
 
     public void renderBackground(GraphicsContext gc, int currentLevel) {
-        renderVignette(gc);
+        renderVignette(gc, dt);
         renderRetroGrid(gc, currentLevel);
     }
 
@@ -184,7 +191,13 @@ public class RenderUIController {
         }
     }
 
-    private void renderVignette(GraphicsContext gc) {
+    private void renderVignette(GraphicsContext gc, double dt) {
+        if (vignetteIntensity > 0) {
+            vignetteIntensity -= dt * 3.0; // fades in 0.33 seconds (1.0 / 3.0)
+            if (vignetteIntensity < 0) vignetteIntensity = 0;
+        }
+
+        Color currentEdgeColor = Color.BLACK.interpolate(Color.rgb(10, 10, 10), vignetteIntensity);
 
         RadialGradient gradient = new RadialGradient(
                 0, 0,
@@ -193,10 +206,14 @@ public class RenderUIController {
                 false,
                 CycleMethod.NO_CYCLE,
                 new Stop(0, Color.web("#002424")),
-                new Stop(1, Color.BLACK)
+                new Stop(1, currentEdgeColor)
         );
 
         gc.setFill(gradient);
         gc.fillRect(0, 0, GameConfig.FRAME_WIDTH, GameConfig.FRAME_HEIGHT);
+    }
+
+    public void fireBlockHitFeedback() {
+        this.vignetteIntensity = 1.0;
     }
 }

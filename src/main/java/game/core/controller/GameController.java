@@ -168,6 +168,8 @@ public class GameController {
                     double dt = (now - lastNs) / 1_000_000_000.0; // seconds
                     lastNs = now;
 
+                    uiController.updateRenderDT(dt);
+
                     // reduced cap for better performance / less CPU usage
                     if (dt > 0.1 ) dt = 0.1;
                     int maxSafetyCounter = 0;
@@ -232,7 +234,11 @@ public class GameController {
         CollisionHandler.checkEdgeCollision(balls, p1, paddle, frameHeight, this, ballsToRemove);
         boolean blockColl = CollisionHandler.checkBlockCollision(balls, blocks, p1, ballsToAdd, particles);
 
-        if (blockColl) shakeTime = 0.5;
+        // visual feedback for block destruction
+        if (blockColl) {
+            shakeTime = 0.5;
+            uiController.fireBlockHitFeedback();
+        }
 
         balls.removeAll(ballsToRemove);
         ballsToRemove.clear();
