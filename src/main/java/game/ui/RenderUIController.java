@@ -23,6 +23,12 @@ public class RenderUIController {
     private final Font biggerArcadeFont;
     private final Font smallerArcadeFont;
 
+    // cache for score and lives
+    private int lastScore = -1;
+    private String scoreTextCache = "";
+    private int lastLives = -1;
+    private String livesTextCache = "";
+
     public RenderUIController(EffectController effectController, Player player) {
         this.effectController = effectController;
         this.p1 = player;
@@ -111,9 +117,13 @@ public class RenderUIController {
     }
 
     public void renderScore(GraphicsContext gc, int score) {
+        if (score != lastScore) {
+            lastScore = score;
+            scoreTextCache = "SCORE: " + String.format("%06d", score);
+        }
         gc.setFill(Color.WHITE);
         gc.setFont(smallerArcadeFont);
-        gc.fillText("SCORE | " + score, GameConfig.FRAME_WIDTH - 175, 35);
+        gc.fillText(scoreTextCache, GameConfig.FRAME_WIDTH - 175, 40);
     }
 
     public void renderLives(GraphicsContext gc, int lives) {
@@ -124,14 +134,20 @@ public class RenderUIController {
         gc.setFill(Color.RED);
         drawHeart(gc, heartX, heartY, heartSize);
 
+        if (lives != lastLives) {
+            lastLives = lives;
+            livesTextCache = "x " + lives;
+        }
+
         gc.setFill(Color.WHITE);
         gc.setFont(smallerArcadeFont);
-        gc.fillText("x " + lives, heartX + heartSize + 10, heartY + (heartY * 0.5 + heartY * 0.25));
+        gc.fillText(livesTextCache, heartX + heartSize + 10, heartY + heartSize / 1.3);
     }
 
-    public void renderBackground(GraphicsContext gc) {
+
+    public void renderBackground(GraphicsContext gc, int currentLevel) {
         renderVignette(gc);
-        renderRetroGrid(gc);
+        renderRetroGrid(gc, currentLevel);
     }
 
     private void drawHeart(GraphicsContext gc, double x, double y, double size) {
@@ -151,12 +167,13 @@ public class RenderUIController {
         gc.closePath();
     }
 
-    private void renderRetroGrid(GraphicsContext gc) {
+    private void renderRetroGrid(GraphicsContext gc, int currentLevel) {
         gc.setStroke(Color.web("#1a1a1a"));
         gc.setLineWidth(1.0);
 
         double spacing = 40;
-        gridOffset = (gridOffset + 0.5) % spacing;
+        // moves faster with level progress
+        gridOffset = (gridOffset + (currentLevel * 0.75)) % spacing;
 
         for (double y = gridOffset; y < GameConfig.FRAME_HEIGHT; y += spacing) {
             gc.strokeLine(0, y, GameConfig.FRAME_WIDTH, y);

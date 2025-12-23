@@ -50,6 +50,10 @@ public class LevelController {
         return BlockGrid.renderBlockGrid(gc, currentRows, currentColumns);
     }
 
+    public int getCurrentLevel() {
+        return currentLevel;
+    }
+
     public int getCurrentRows() {
         return levelMap.get(currentLevel).rows();
     }

@@ -116,7 +116,7 @@ public class GameController {
 
                 gc.setFill(Color.BLACK);
                 gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-                uiController.renderBackground(gc);
+                uiController.renderBackground(gc, levelController.getCurrentLevel());
                 gameOver = p1.checkForGameOver();
 
                 // --- Level cleared ---
@@ -135,6 +135,7 @@ public class GameController {
                     gc.setFont(new Font(50));
                     List<Map.Entry<String, Integer>> topFive = profileManager.getTopFive();
                     uiController.renderStartScreen(gc, inputController.getNameInput(), topFive);
+                    return;
                 }
                 if (gameStarted) {
 

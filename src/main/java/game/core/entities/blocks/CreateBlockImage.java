@@ -19,11 +19,12 @@ public class CreateBlockImage {
     }
 
     public Image createGlowCache() {
+        System.out.println("created glow cache");
         Canvas tempCanvas = new Canvas(BLOCK_WIDTH + 40, BLOCK_HEIGHT + 40);
         GraphicsContext tempGc = tempCanvas.getGraphicsContext2D();
 
         tempGc.save();
-        tempGc.setEffect(new DropShadow(20, color));
+        tempGc.setEffect(new DropShadow(15, color));
         tempGc.setFill(color);
         tempGc.fillRoundRect(20, 20, BLOCK_WIDTH, BLOCK_HEIGHT, 10, 10);
         tempGc.restore();
